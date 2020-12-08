@@ -143,6 +143,25 @@ class Foreground extends StatelessWidget {
                         shape: CircleBorder()),
                   ),
                 ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  for (Location location in locations)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Stack(
+                        children: [
+                          Image.network(
+                            location.imageUrl,
+                            height: getHeight(context) * 0.35,
+                            width: getWidth(context) * 0.4,
+                          )
+                        ],
+                      ),
+                    )
+                ],
               )
             ],
           ),
@@ -155,13 +174,13 @@ class Foreground extends StatelessWidget {
 final locations = [
   Location(
       text: 'New York',
-      time: '10:44am',
+      time: 1044,
       temperature: 15,
       weather: 'Cloudy',
       imageUrl: 'https://i.ibb.co/df35Y8Q/2.png'),
   Location(
       text: 'San Francisco',
-      time: '7:44am',
+      time: 744,
       temperature: 6,
       weather: 'Raining',
       imageUrl: 'https://i.ibb.co/7WyTr6q/3.png'),

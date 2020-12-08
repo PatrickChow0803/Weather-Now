@@ -1,6 +1,6 @@
 class Location {
   final String text;
-  final String time;
+  final int time;
   final int temperature;
   final String weather;
   final String imageUrl;
