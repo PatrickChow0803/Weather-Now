@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weather_app/models/location.dart';
 import 'package:weather_app/utility.dart';
 
 void main() {
@@ -150,3 +151,18 @@ class Foreground extends StatelessWidget {
     );
   }
 }
+
+final locations = [
+  Location(
+      text: 'New York',
+      time: '10:44am',
+      temperature: 15,
+      weather: 'Cloudy',
+      imageUrl: 'https://i.ibb.co/df35Y8Q/2.png'),
+  Location(
+      text: 'San Francisco',
+      time: '7:44am',
+      temperature: 6,
+      weather: 'Raining',
+      imageUrl: 'https://i.ibb.co/7WyTr6q/3.png'),
+];
