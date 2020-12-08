@@ -56,6 +56,7 @@ class Foreground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // used to give color and shape to the Text Field
     var outlineInputBorder = OutlineInputBorder(
       borderSide: BorderSide(color: Colors.white),
       borderRadius: BorderRadius.all(
@@ -108,10 +109,11 @@ class Foreground extends StatelessWidget {
               SizedBox(height: 35),
               TextField(
                 decoration: InputDecoration(
+                  suffixIcon: Icon(Icons.search, color: Colors.white),
                   hintText: 'Search City',
                   hintStyle: TextStyle(
                     color: Colors.white,
-                    fontSize: 12,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
                   fillColor: Colors.white,
@@ -119,6 +121,27 @@ class Foreground extends StatelessWidget {
                   enabledBorder: outlineInputBorder,
                   focusedBorder: outlineInputBorder,
                 ),
+              ),
+              SizedBox(height: 100),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'My Locations',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  OutlinedButton(
+                    child: Icon(Icons.more_horiz),
+                    onPressed: () {},
+                    style: OutlinedButton.styleFrom(
+                        primary: Colors.white,
+                        side: BorderSide(width: 1, color: Colors.white),
+                        shape: CircleBorder()),
+                  ),
+                ],
               )
             ],
           ),
