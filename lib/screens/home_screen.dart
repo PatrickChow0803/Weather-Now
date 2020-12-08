@@ -26,14 +26,14 @@ class MyHomePage extends StatelessWidget {
           ),
         ),
         // This Scaffold causes a fade out effect
-        Foreground(),
+        HomeForeground(),
       ],
     );
   }
 }
 
-class Foreground extends StatelessWidget {
-  const Foreground({
+class HomeForeground extends StatelessWidget {
+  const HomeForeground({
     Key key,
   }) : super(key: key);
 
