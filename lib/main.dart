@@ -86,84 +86,116 @@ class Foreground extends StatelessWidget {
           )
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 18),
-        // DefaultTextStyle makes it so that all the widgets within it use the same style
-        child: DefaultTextStyle(
-          style: GoogleFonts.raleway(color: Colors.white),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 50),
-              Text(
-                'Hello Patrick',
-                style: TextStyle(fontSize: 30),
-              ),
-              SizedBox(height: 5),
-              Text(
-                'Check the weather by the city',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
+      // prevents overflow from soft keyboard
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 18),
+          // DefaultTextStyle makes it so that all the widgets within it use the same style
+          child: DefaultTextStyle(
+            style: GoogleFonts.raleway(color: Colors.white),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 50),
+                Text(
+                  'Hello Patrick',
+                  style: TextStyle(fontSize: 30),
                 ),
-              ),
-              SizedBox(height: 35),
-              TextField(
-                decoration: InputDecoration(
-                  suffixIcon: Icon(Icons.search, color: Colors.white),
-                  hintText: 'Search City',
-                  hintStyle: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                SizedBox(height: 5),
+                Text(
+                  'Check the weather by the city',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
                   ),
-                  fillColor: Colors.white,
-                  border: outlineInputBorder,
-                  enabledBorder: outlineInputBorder,
-                  focusedBorder: outlineInputBorder,
                 ),
-              ),
-              SizedBox(height: 100),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'My Locations',
-                    style: TextStyle(
-                      fontSize: 22,
+                SizedBox(height: 35),
+                TextField(
+                  decoration: InputDecoration(
+                    suffixIcon: Icon(Icons.search, color: Colors.white),
+                    hintText: 'Search City',
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
+                    fillColor: Colors.white,
+                    border: outlineInputBorder,
+                    enabledBorder: outlineInputBorder,
+                    focusedBorder: outlineInputBorder,
                   ),
-                  OutlinedButton(
-                    child: Icon(Icons.more_horiz),
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                        primary: Colors.white,
-                        side: BorderSide(width: 1, color: Colors.white),
-                        shape: CircleBorder()),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  for (Location location in locations)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Stack(
-                        children: [
-                          Image.network(
-                            location.imageUrl,
-                            height: getHeight(context) * 0.35,
-                            width: getWidth(context) * 0.4,
-                          )
-                        ],
+                ),
+                SizedBox(height: 90),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'My Locations',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
                       ),
-                    )
-                ],
-              )
-            ],
+                    ),
+                    OutlinedButton(
+                      child: Icon(Icons.more_horiz),
+                      onPressed: () {},
+                      style: OutlinedButton.styleFrom(
+                          primary: Colors.white,
+                          side: BorderSide(width: 1, color: Colors.white),
+                          shape: CircleBorder()),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    for (Location location in locations)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Stack(
+                          alignment: AlignmentDirectional.center,
+                          children: [
+                            ColorFiltered(
+                              child: Image.network(
+                                location.imageUrl,
+                                height: getHeight(context) * 0.35,
+                                width: getWidth(context) * 0.425,
+                                fit: BoxFit.cover,
+                              ),
+                              colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  location.text,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(location.time.toString()),
+                                SizedBox(height: 40),
+                                Text(
+                                  location.temperature.toString() + '°',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 40,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                SizedBox(height: 40),
+                                Text(location.weather),
+                              ],
+                            )
+                          ],
+                        ),
+                      )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
