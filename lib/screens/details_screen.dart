@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weather_icons/weather_icons.dart';
 
 import '../utility.dart';
 
@@ -61,7 +62,7 @@ class DetailForeground extends StatelessWidget {
         child: Column(
           children: [
             const Icon(
-              Icons.cloud,
+              WeatherIcons.day_cloudy_high,
               color: Colors.white,
               size: 100,
             ),
@@ -69,6 +70,7 @@ class DetailForeground extends StatelessWidget {
               style: GoogleFonts.raleway(),
               child: Column(
                 children: [
+                  const SizedBox(height: 20),
                   const Text(
                     'Los Angeles',
                     style: TextStyle(fontSize: 30),
@@ -78,7 +80,7 @@ class DetailForeground extends StatelessWidget {
                     'Cloudy, 7:44 AM',
                     style: TextStyle(fontSize: 25),
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 30),
                   const Text(
                     '23°',
                     style: TextStyle(fontSize: 100),
