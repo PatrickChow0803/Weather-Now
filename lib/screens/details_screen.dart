@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -23,10 +22,10 @@ class DetailScreen extends StatelessWidget {
           child: Container(
             width: getWidth(context),
             height: getWidth(context) / 1.3,
-            color: Color(0xFF2D2C35),
+            color: const Color(0xFF2D2C35),
           ),
         ),
-        DetailForeground()
+        const DetailForeground()
       ],
     );
   }
@@ -44,10 +43,10 @@ class DetailForeground extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        leading: Icon(Icons.arrow_back, size: 20),
+        leading: const Icon(Icons.arrow_back, size: 20),
         actions: [
           IconButton(
-            icon: CircleAvatar(
+            icon: const CircleAvatar(
               radius: 15,
               backgroundImage: NetworkImage(
                 'https://lh3.googleusercontent.com/a-/AOh14GhLpl-fIkDipAjfHrC7zcifmUuxmu1T1U9zO2Hdeg=s88-c-k-c0x00ffffff-no-rj-mo',
@@ -58,80 +57,71 @@ class DetailForeground extends StatelessWidget {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 18),
+        padding: const EdgeInsets.symmetric(horizontal: 18),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              width: getWidth(context),
-              child: Icon(
-                Icons.cloud,
-                color: Colors.white,
-                size: 100,
-              ),
+            const Icon(
+              Icons.cloud,
+              color: Colors.white,
+              size: 100,
             ),
             DefaultTextStyle(
               style: GoogleFonts.raleway(),
-              child: Container(
-                child: Column(
-                  children: [
-                    Text(
-                      'Los Angeles',
-                      style: TextStyle(fontSize: 30),
+              child: Column(
+                children: [
+                  const Text(
+                    'Los Angeles',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Cloudy, 7:44 AM',
+                    style: TextStyle(fontSize: 25),
+                  ),
+                  const SizedBox(height: 80),
+                  const Text(
+                    '23°',
+                    style: TextStyle(fontSize: 100),
+                  ),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Weather Details',
+                              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        const WeatherInformation(
+                          weatherData: 'Cloudy',
+                          weatherValue: 93,
+                        ),
+                        const SizedBox(height: 10),
+                        const WeatherInformation(
+                          weatherData: 'Precipitation',
+                          weatherValue: 0,
+                        ),
+                        const SizedBox(height: 10),
+                        const WeatherInformation(
+                          weatherData: 'Humidity',
+                          weatherValue: 65,
+                        ),
+                        const SizedBox(height: 10),
+                        const WeatherInformation(
+                          weatherData: 'Wind',
+                          weatherValue: 5,
+                          isWind: true,
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Cloudy, 7:44 AM',
-                      style: TextStyle(fontSize: 25),
-                    ),
-                    SizedBox(height: 80),
-                    Text(
-                      '23°',
-                      style: TextStyle(fontSize: 100),
-                    ),
-                    SizedBox(height: 10),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Weather Details',
-                                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
-                              ),
-                              // Text(''),
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          WeatherInformation(
-                            weatherData: 'Cloudy',
-                            weatherValue: 93,
-                          ),
-                          SizedBox(height: 10),
-                          WeatherInformation(
-                            weatherData: 'Precipitation',
-                            weatherValue: 0,
-                          ),
-                          SizedBox(height: 10),
-                          WeatherInformation(
-                            weatherData: 'Humidity',
-                            weatherValue: 65,
-                          ),
-                          SizedBox(height: 10),
-                          WeatherInformation(
-                            weatherData: 'Wind',
-                            weatherValue: 5,
-                            isWind: true,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -156,16 +146,16 @@ class WeatherInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     String weatherValueFormatted = '';
     if (!isWind) {
-      weatherValueFormatted = weatherValue.toString() + '%';
+      weatherValueFormatted = '$weatherValue%';
     } else {
-      weatherValueFormatted = weatherValue.toString() + 'km/h';
+      weatherValueFormatted = '${weatherValue}km/h';
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Opacity(
-          child: Text(weatherData),
           opacity: .6,
+          child: Text(weatherData),
         ),
         Text(weatherValueFormatted),
       ],

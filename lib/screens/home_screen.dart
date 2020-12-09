@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../utility.dart';
+
 import '../models/location.dart';
+import '../utility.dart';
 
 class MyHomePage extends StatelessWidget {
   @override
@@ -26,7 +27,7 @@ class MyHomePage extends StatelessWidget {
           ),
         ),
         // This Scaffold causes a fade out effect
-        HomeForeground(),
+        const HomeForeground(),
       ],
     );
   }
@@ -40,7 +41,7 @@ class HomeForeground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // used to give color and shape to the Text Field
-    var outlineInputBorder = OutlineInputBorder(
+    const outlineInputBorder = OutlineInputBorder(
       borderSide: BorderSide(color: Colors.white),
       borderRadius: BorderRadius.all(
         Radius.circular(30),
@@ -51,14 +52,14 @@ class HomeForeground extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         leading: IconButton(
-          icon: Icon(Icons.menu),
+          icon: const Icon(Icons.menu),
           onPressed: () {},
         ),
         actions: [
           IconButton(
-            icon: CircleAvatar(
+            icon: const CircleAvatar(
               radius: 15,
               backgroundImage: NetworkImage(
                 'https://lh3.googleusercontent.com/a-/AOh14GhLpl-fIkDipAjfHrC7zcifmUuxmu1T1U9zO2Hdeg=s88-c-k-c0x00ffffff-no-rj-mo',
@@ -71,28 +72,28 @@ class HomeForeground extends StatelessWidget {
       // prevents overflow from soft keyboard
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 18),
+          padding: const EdgeInsets.symmetric(horizontal: 18),
           // DefaultTextStyle makes it so that all the widgets within it use the same style
           child: DefaultTextStyle(
             style: GoogleFonts.raleway(color: Colors.white),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 50),
-                Text(
+                const SizedBox(height: 50),
+                const Text(
                   'Hello Patrick',
                   style: TextStyle(fontSize: 30),
                 ),
-                SizedBox(height: 5),
-                Text(
+                const SizedBox(height: 5),
+                const Text(
                   'Check the weather by the city',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(height: 35),
-                TextField(
+                const SizedBox(height: 35),
+                const TextField(
                   decoration: InputDecoration(
                     suffixIcon: Icon(Icons.search, color: Colors.white),
                     hintText: 'Search City',
@@ -107,11 +108,11 @@ class HomeForeground extends StatelessWidget {
                     focusedBorder: outlineInputBorder,
                   ),
                 ),
-                SizedBox(height: 90),
+                const SizedBox(height: 90),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       'My Locations',
                       style: TextStyle(
                         fontSize: 22,
@@ -119,16 +120,16 @@ class HomeForeground extends StatelessWidget {
                       ),
                     ),
                     OutlinedButton(
-                      child: Icon(Icons.more_horiz),
                       onPressed: () {},
                       style: OutlinedButton.styleFrom(
                           primary: Colors.white,
-                          side: BorderSide(width: 1, color: Colors.white),
-                          shape: CircleBorder()),
+                          side: const BorderSide(color: Colors.white),
+                          shape: const CircleBorder()),
+                      child: const Icon(Icons.more_horiz),
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -139,35 +140,35 @@ class HomeForeground extends StatelessWidget {
                           alignment: AlignmentDirectional.center,
                           children: [
                             ColorFiltered(
+                              colorFilter: const ColorFilter.mode(Colors.black45, BlendMode.darken),
                               child: Image.network(
                                 location.imageUrl,
                                 height: getHeight(context) * 0.35,
                                 width: getWidth(context) * 0.425,
                                 fit: BoxFit.cover,
                               ),
-                              colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
                             ),
                             Column(
                               children: [
                                 Text(
                                   location.text,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 19,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 Text(location.time.toString()),
-                                SizedBox(height: 40),
+                                const SizedBox(height: 40),
                                 Text(
-                                  location.temperature.toString() + '°',
-                                  style: TextStyle(
+                                  '${location.temperature}°',
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 40,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                SizedBox(height: 40),
+                                const SizedBox(height: 40),
                                 Text(location.weather),
                               ],
                             )
