@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weather_app/services/geo_location.dart';
 import 'package:weather_app/services/weather.dart';
 
 import '../models/location.dart';
@@ -46,6 +47,20 @@ class HomeForeground extends StatefulWidget {
 class _HomeForegroundState extends State<HomeForeground> {
   final _cityController = TextEditingController();
   final _weather = Weather();
+  final _location = GeoLocation();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // getLocationData();
+    // _location.getPosition();
+  }
+
+  Future<void> getLocationData() async {
+    // await _location.getPosition();
+    // print('Longitude is: ${_location.longitude}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +96,11 @@ class _HomeForegroundState extends State<HomeForeground> {
                 'https://lh3.googleusercontent.com/a-/AOh14GhLpl-fIkDipAjfHrC7zcifmUuxmu1T1U9zO2Hdeg=s88-c-k-c0x00ffffff-no-rj-mo',
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              print('called');
+              // _location.getPosition();
+              _location.getCurrentLocation();
+            },
           )
         ],
       ),

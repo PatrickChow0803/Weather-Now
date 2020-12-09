@@ -11,7 +11,17 @@ class Weather {
       print(response.statusCode);
       print(response.body);
     } catch (e) {
-      print('PORQUE:$e');
+      print('getWeatherByCity Error:$e');
     }
   }
+
+  // Future<void> getWeatherByCity(String city) async {
+  //   try {
+  //     final response = await http.get('$urlByCity$city&appid=$_apiKey');
+  //     print(response.statusCode);
+  //     print(response.body);
+  //   } catch (e) {
+  //     print('PORQUE:$e');
+  //   }
+  // }
 }
