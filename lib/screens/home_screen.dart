@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weather_app/services/weather.dart';
 
 import '../models/location.dart';
 import '../utility.dart';
@@ -33,10 +34,19 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class HomeForeground extends StatelessWidget {
+class HomeForeground extends StatefulWidget {
   const HomeForeground({
     Key key,
   }) : super(key: key);
+
+  @override
+  _HomeForegroundState createState() => _HomeForegroundState();
+}
+
+class _HomeForegroundState extends State<HomeForeground> {
+  final _cityController = TextEditingController();
+  final _weather = Weather();
+  String _cityInput = '';
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +57,13 @@ class HomeForeground extends StatelessWidget {
         Radius.circular(30),
       ),
     );
+
+    const textStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+    );
+
     return Scaffold(
       backgroundColor: Colors.black54,
       appBar: AppBar(
@@ -93,20 +110,25 @@ class HomeForeground extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 35),
-                const TextField(
+                TextField(
+                  controller: _cityController,
+                  style: textStyle,
                   decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.search, color: Colors.white),
+                    suffixIcon: IconButton(
+                        onPressed: () async {
+                          await _weather.getWeatherByCity(_cityController.text);
+                        },
+                        icon: const Icon(Icons.search, color: Colors.white)),
                     hintText: 'Search City',
-                    hintStyle: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    hintStyle: textStyle,
                     fillColor: Colors.white,
                     border: outlineInputBorder,
                     enabledBorder: outlineInputBorder,
                     focusedBorder: outlineInputBorder,
                   ),
+                  onSubmitted: (value) async {
+                    await _weather.getWeatherByCity(value);
+                  },
                 ),
                 const SizedBox(height: 90),
                 Row(
