@@ -107,48 +107,25 @@ class DetailForeground extends StatelessWidget {
                             ],
                           ),
                           SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Opacity(
-                                child: Text('Cloudy'),
-                                opacity: .6,
-                              ),
-                              Text('98%'),
-                            ],
+                          WeatherInformation(
+                            weatherData: 'Cloudy',
+                            weatherValue: 93,
                           ),
                           SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Opacity(
-                                child: Text('Precipitation'),
-                                opacity: .6,
-                              ),
-                              Text('0%'),
-                            ],
+                          WeatherInformation(
+                            weatherData: 'Precipitation',
+                            weatherValue: 0,
                           ),
                           SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Opacity(
-                                child: Text('Humidity'),
-                                opacity: .6,
-                              ),
-                              Text('65%'),
-                            ],
+                          WeatherInformation(
+                            weatherData: 'Humidity',
+                            weatherValue: 65,
                           ),
                           SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Opacity(
-                                child: Text('Wind'),
-                                opacity: .6,
-                              ),
-                              Text('5 km/h'),
-                            ],
+                          WeatherInformation(
+                            weatherData: 'Wind',
+                            weatherValue: 5,
+                            isWind: true,
                           ),
                         ],
                       ),
@@ -160,6 +137,38 @@ class DetailForeground extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class WeatherInformation extends StatelessWidget {
+  final String weatherData;
+  final int weatherValue;
+  final bool isWind;
+  const WeatherInformation({
+    Key key,
+    this.weatherData,
+    this.weatherValue,
+    this.isWind = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    String weatherValueFormatted = '';
+    if (!isWind) {
+      weatherValueFormatted = weatherValue.toString() + '%';
+    } else {
+      weatherValueFormatted = weatherValue.toString() + 'km/h';
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Opacity(
+          child: Text(weatherData),
+          opacity: .6,
+        ),
+        Text(weatherValueFormatted),
+      ],
     );
   }
 }
