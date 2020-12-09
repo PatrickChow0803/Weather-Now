@@ -53,8 +53,7 @@ class _HomeForegroundState extends State<HomeForeground> {
   void initState() {
     super.initState();
 
-    // getLocationData();
-    // _location.getPosition();
+    _location.getCurrentLocation();
   }
 
   Future<void> getLocationData() async {
@@ -86,7 +85,9 @@ class _HomeForegroundState extends State<HomeForeground> {
         iconTheme: const IconThemeData(color: Colors.white),
         leading: IconButton(
           icon: const Icon(Icons.menu),
-          onPressed: () {},
+          onPressed: () {
+            _weather.getWeatherByCoordinates(_location.latitude, _location.longitude);
+          },
         ),
         actions: [
           IconButton(
@@ -98,8 +99,6 @@ class _HomeForegroundState extends State<HomeForeground> {
             ),
             onPressed: () {
               print('called');
-              // _location.getPosition();
-              _location.getCurrentLocation();
             },
           )
         ],
