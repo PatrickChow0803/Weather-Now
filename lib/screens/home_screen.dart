@@ -46,7 +46,6 @@ class HomeForeground extends StatefulWidget {
 class _HomeForegroundState extends State<HomeForeground> {
   final _cityController = TextEditingController();
   final _weather = Weather();
-  String _cityInput = '';
 
   @override
   Widget build(BuildContext context) {
