@@ -244,13 +244,13 @@ class _HomeForegroundState extends State<HomeForeground> {
 final locations = [
   LocationModel(
       text: 'New York',
-      time: 1044,
+      // time: 1044,
       temperature: 15,
       weather: 'Cloudy',
       imageUrl: 'https://i.ibb.co/df35Y8Q/2.png'),
   LocationModel(
       text: 'San Francisco',
-      time: 744,
+      // time: 744,
       temperature: 6,
       weather: 'Raining',
       imageUrl: 'https://i.ibb.co/7WyTr6q/3.png'),

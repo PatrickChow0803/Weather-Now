@@ -15,6 +15,10 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime current = DateTime.now();
+    Stream timer = Stream.periodic(
+        const Duration(seconds: 1), (i) => current = current.add(const Duration(seconds: 1)));
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Stack(
@@ -41,11 +45,16 @@ class WeatherCard extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              Text(DateFormat('hh:mm')
-                  .format(DateTime.fromMillisecondsSinceEpoch(location.time - location.timezone))),
+              StreamBuilder(
+                stream: timer,
+                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  return Text(DateFormat('hh:mm:ss').format(DateTime.fromMillisecondsSinceEpoch(
+                      current.millisecondsSinceEpoch + location.timezone)));
+                },
+              ),
               const SizedBox(height: 40),
               Text(
-                '${location.temperature}°F',
+                '${location.temperature.round()}°F',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 40,
