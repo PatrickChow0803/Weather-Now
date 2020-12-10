@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:weather_app/services/geo_location.dart';
 import 'package:weather_app/services/weather.dart';
+import 'package:weather_app/widgets/weather_card.dart';
 
 import '../models/location.dart';
 import '../utility.dart';
@@ -20,6 +21,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _weather = Weather();
   final _location = GeoLocation();
   bool _loadingApp = false;
+  LocationModel _currentLocationWeather;
 
   @override
   void initState() {
@@ -27,9 +29,11 @@ class _MyHomePageState extends State<MyHomePage> {
     _loadingApp = !_loadingApp;
 
     // After getting the coordinates, use them to get the weather
-    _location.getCurrentLocation().then((value) => _weather
-        .getWeatherByCoordinates(_location.latitude, _location.longitude)
-        .then((value) => changeLoading()));
+    _location.getCurrentLocation().then((value) =>
+        _weather.getWeatherByCoordinates(_location.latitude, _location.longitude).then((value) {
+          _currentLocationWeather = value;
+          changeLoading();
+        }));
   }
 
   void changeLoading() {
@@ -68,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               // This Scaffold causes a fade out effect
-              HomeForeground(_weather, _location),
+              HomeForeground(_weather, _location, _currentLocationWeather),
             ],
           );
   }
@@ -77,8 +81,10 @@ class _MyHomePageState extends State<MyHomePage> {
 class HomeForeground extends StatefulWidget {
   final Weather _weather;
   final GeoLocation _location;
+  final LocationModel _currentLocationWeather;
 
-  const HomeForeground(this._weather, this._location, {Key key}) : super(key: key);
+  const HomeForeground(this._weather, this._location, this._currentLocationWeather, {Key key})
+      : super(key: key);
 
   @override
   _HomeForegroundState createState() => _HomeForegroundState();
@@ -161,6 +167,7 @@ class _HomeForegroundState extends State<HomeForeground> {
                   decoration: InputDecoration(
                     prefixIcon: IconButton(
                       onPressed: () {
+                        _searchController.clear();
                         setState(() {
                           _searchByCity = !_searchByCity;
                         });
@@ -221,50 +228,8 @@ class _HomeForegroundState extends State<HomeForeground> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    for (Location location in locations)
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Stack(
-                          alignment: AlignmentDirectional.center,
-                          children: [
-                            ColorFiltered(
-                              colorFilter: const ColorFilter.mode(Colors.black45, BlendMode.darken),
-                              child: FadeInImage.memoryNetwork(
-                                image: location.imageUrl,
-                                height: getHeight(context) * 0.35,
-                                width: getWidth(context) * 0.425,
-                                fit: BoxFit.cover,
-                                placeholder: kTransparentImage,
-                                fadeInDuration: const Duration(seconds: 2),
-                              ),
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  location.text,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(location.time.toString()),
-                                const SizedBox(height: 40),
-                                Text(
-                                  '${location.temperature}°',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const SizedBox(height: 40),
-                                Text(location.weather),
-                              ],
-                            )
-                          ],
-                        ),
-                      )
+                    for (LocationModel location in locations)
+                      WeatherCard(location: widget._currentLocationWeather)
                   ],
                 )
               ],
@@ -277,13 +242,13 @@ class _HomeForegroundState extends State<HomeForeground> {
 }
 
 final locations = [
-  Location(
+  LocationModel(
       text: 'New York',
       time: 1044,
       temperature: 15,
       weather: 'Cloudy',
       imageUrl: 'https://i.ibb.co/df35Y8Q/2.png'),
-  Location(
+  LocationModel(
       text: 'San Francisco',
       time: 744,
       temperature: 6,
