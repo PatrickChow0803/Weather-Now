@@ -32,6 +32,8 @@ class Weather {
       // api.openweathermap.org/data/2.5/forecast?zip={zip code},{country code}&appid={API key}
       final response = await http
           .get('https://api.openweathermap.org/data/2.5/forecast?zip=$zipCode&appid=$_apiKey');
+
+      print(response.body);
     } catch (e) {
       print('getWeatherByZipCode Error: $e');
     }
