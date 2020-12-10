@@ -11,6 +11,7 @@ import '../models/location.dart';
 import '../utility.dart';
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key key}) : super(key: key);
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -63,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Container(
                   width: getWidth(context),
                   height: getWidth(context) / 1.3,
-                  color: Color(0xFF2D2C35),
+                  color: const Color(0xFF2D2C35),
                 ),
               ),
               // This Scaffold causes a fade out effect
@@ -77,17 +78,16 @@ class HomeForeground extends StatefulWidget {
   final Weather _weather;
   final GeoLocation _location;
 
-  const HomeForeground(
-    this._weather,
-    this._location,
-  );
+  const HomeForeground(this._weather, this._location, {Key key}) : super(key: key);
 
   @override
   _HomeForegroundState createState() => _HomeForegroundState();
 }
 
 class _HomeForegroundState extends State<HomeForeground> {
-  final _cityController = TextEditingController();
+  final _searchController = TextEditingController();
+  bool _searchByCity = true;
+
   @override
   Widget build(BuildContext context) {
     // used to give color and shape to the Text Field
@@ -156,15 +156,32 @@ class _HomeForegroundState extends State<HomeForeground> {
                 ),
                 const SizedBox(height: 35),
                 TextField(
-                  controller: _cityController,
+                  controller: _searchController,
                   style: textStyle,
                   decoration: InputDecoration(
+                    prefixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _searchByCity = !_searchByCity;
+                        });
+                      },
+                      splashRadius: 20,
+                      icon: const Icon(
+                        Icons.swap_horiz,
+                        color: Colors.white,
+                      ),
+                    ),
                     suffixIcon: IconButton(
+                        splashRadius: 20,
                         onPressed: () async {
-                          await widget._weather.getWeatherByCity(_cityController.text);
+                          if (_searchByCity) {
+                            await widget._weather.getWeatherByCity(_searchController.text);
+                          } else {
+                            await widget._weather.getWeatherByZipCode(_searchController.text);
+                          }
                         },
                         icon: const Icon(Icons.search, color: Colors.white)),
-                    hintText: 'Search City',
+                    hintText: _searchByCity ? 'Search By City Name' : 'Search By Zip',
                     hintStyle: textStyle,
                     fillColor: Colors.white,
                     border: outlineInputBorder,
@@ -172,7 +189,11 @@ class _HomeForegroundState extends State<HomeForeground> {
                     focusedBorder: outlineInputBorder,
                   ),
                   onSubmitted: (value) async {
-                    await widget._weather.getWeatherByCity(value);
+                    if (_searchByCity) {
+                      await widget._weather.getWeatherByCity(value);
+                    } else {
+                      await widget._weather.getWeatherByZipCode(value);
+                    }
                   },
                 ),
                 const SizedBox(height: 90),

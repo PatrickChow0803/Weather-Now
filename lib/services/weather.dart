@@ -27,7 +27,7 @@ class Weather {
     }
   }
 
-  Future<void> getWeatherByZipCode(int zipCode) async {
+  Future<void> getWeatherByZipCode(String zipCode) async {
     try {
       // api.openweathermap.org/data/2.5/forecast?zip={zip code},{country code}&appid={API key}
       final response = await http
