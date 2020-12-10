@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:weather_app/models/location.dart';
 
@@ -40,7 +41,8 @@ class WeatherCard extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              Text(location.time.toString()),
+              Text(DateFormat('hh:mm')
+                  .format(DateTime.fromMillisecondsSinceEpoch(location.time - location.timezone))),
               const SizedBox(height: 40),
               Text(
                 '${location.temperature}°F',
