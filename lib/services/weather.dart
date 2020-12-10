@@ -6,6 +6,7 @@ class Weather {
 
   Future<void> getWeatherByCity(String city) async {
     try {
+      // api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
       final response =
           await http.get('https://api.openweathermap.org/data/2.5/forecast?q=$city&appid=$_apiKey');
       print(response.statusCode);
@@ -17,11 +18,22 @@ class Weather {
 
   Future<void> getWeatherByCoordinates(double latitude, double longitude) async {
     try {
+      // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
       final response = await http.get(
-          'https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=$_apiKey');
+          'https://api.openweathermap.org/data/2.5/forecast?lat=$latitude&lon=$longitude&appid=$_apiKey');
       print(response.body);
     } catch (e) {
-      print('PORQUE:$e');
+      print('getWeatherByCoordinates Error: $e');
+    }
+  }
+
+  Future<void> getWeatherByZipCode(int zipCode) async {
+    try {
+      // api.openweathermap.org/data/2.5/forecast?zip={zip code},{country code}&appid={API key}
+      final response = await http
+          .get('https://api.openweathermap.org/data/2.5/forecast?zip=$zipCode&appid=$_apiKey');
+    } catch (e) {
+      print('getWeatherByZipCode Error: $e');
     }
   }
 }
