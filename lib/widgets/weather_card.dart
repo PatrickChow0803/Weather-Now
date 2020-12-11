@@ -20,7 +20,7 @@ class WeatherCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // These are used for getting the proper time and updating it.
     DateTime current = DateTime.now();
-    Stream timer = Stream.periodic(
+    final Stream timer = Stream.periodic(
         const Duration(seconds: 1), (i) => current = current.add(const Duration(seconds: 1)));
 
     return InkWell(
@@ -53,7 +53,7 @@ class WeatherCard extends StatelessWidget {
                 InkWell(
                   onTap: () {},
                   child: Text(
-                    location.text,
+                    location.name,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 19,

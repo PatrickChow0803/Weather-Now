@@ -28,7 +28,7 @@ class Weather {
       final decodedJson = jsonDecode(response.body);
 
       LocationModel newLocation = LocationModel.fromJson(decodedJson);
-      print(newLocation.text);
+      print(newLocation.name);
 
       return newLocation;
     } catch (e) {

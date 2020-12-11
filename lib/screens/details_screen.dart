@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:weather_app/models/location.dart';
 import 'package:weather_icons/weather_icons.dart';
 
@@ -48,6 +49,11 @@ class DetailForeground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // These are used for getting the proper time and updating it.
+    DateTime current = DateTime.now();
+    final Stream timer = Stream.periodic(
+        const Duration(seconds: 1), (i) => current = current.add(const Duration(seconds: 1)));
+
     return Scaffold(
       backgroundColor: Colors.black54,
       appBar: AppBar(
@@ -75,8 +81,8 @@ class DetailForeground extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 18),
         child: Column(
           children: [
-            const Icon(
-              WeatherIcons.day_cloudy_high,
+            Icon(
+              getIcon(location.weather),
               color: Colors.white,
               size: 100,
             ),
@@ -85,19 +91,28 @@ class DetailForeground extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  const Text(
-                    'Los Angeles',
-                    style: TextStyle(fontSize: 30),
+                  Text(
+                    location.name,
+                    style: const TextStyle(fontSize: 30),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Cloudy, 7:44 AM',
-                    style: TextStyle(fontSize: 25),
+                  Text(location.weather, style: const TextStyle(fontSize: 24)),
+                  const SizedBox(height: 10),
+                  StreamBuilder(
+                    stream: timer,
+                    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      // COULD ADD 'hh:mm:ss' into DateFormat's constructor
+                      return Text(
+                        DateFormat().add_jm().format(DateTime.fromMillisecondsSinceEpoch(
+                            current.millisecondsSinceEpoch + location.timezone)),
+                        style: const TextStyle(fontSize: 24),
+                      );
+                    },
                   ),
-                  const SizedBox(height: 30),
-                  const Text(
-                    '23°',
-                    style: TextStyle(fontSize: 100),
+                  const SizedBox(height: 10),
+                  Text(
+                    '${location.temperature.round()}°F',
+                    style: const TextStyle(fontSize: 80),
                   ),
                   const SizedBox(height: 20),
                   Padding(
@@ -109,29 +124,35 @@ class DetailForeground extends StatelessWidget {
                           children: [
                             const Text(
                               'Weather Details',
-                              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
+                              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
                             ),
                           ],
                         ),
                         const SizedBox(height: 20),
-                        const WeatherInformation(
-                          weatherData: 'Cloudy',
-                          weatherValue: 93,
+                        WeatherInformation(
+                          weatherData: 'Feels Like',
+                          weatherValue: location.feelsLike,
                         ),
                         const SizedBox(height: 10),
-                        const WeatherInformation(
-                          weatherData: 'Precipitation',
-                          weatherValue: 0,
+                        WeatherInformation(
+                          weatherData: 'Minimum Temp',
+                          weatherValue: location.tempMin,
                         ),
                         const SizedBox(height: 10),
-                        const WeatherInformation(
+                        WeatherInformation(
+                          weatherData: 'Maximum Temp',
+                          weatherValue: location.tempMax,
+                        ),
+                        const SizedBox(height: 10),
+                        WeatherInformation(
                           weatherData: 'Humidity',
-                          weatherValue: 65,
+                          weatherValue: location.humidity,
+                          isHumidity: true,
                         ),
                         const SizedBox(height: 10),
-                        const WeatherInformation(
+                        WeatherInformation(
                           weatherData: 'Wind',
-                          weatherValue: 5,
+                          weatherValue: location.wind,
                           isWind: true,
                         ),
                       ],
@@ -145,26 +166,53 @@ class DetailForeground extends StatelessWidget {
       ),
     );
   }
+
+  // https://openweathermap.org/weather-conditions
+  // Converts ['weather']['main'] into an IconData to be displayed
+  IconData getIcon(String weather) {
+    switch (weather) {
+      case 'Thunderstorm':
+        return WeatherIcons.thunderstorm;
+      case 'Drizzle':
+        return WeatherIcons.sprinkle;
+      case 'Rain':
+        return WeatherIcons.rain;
+      case 'Snow':
+        return WeatherIcons.snow;
+      case 'Atmosphere':
+        return WeatherIcons.fog;
+      case 'Clear':
+        return WeatherIcons.day_sunny;
+      case 'Clouds':
+        return WeatherIcons.cloud;
+      default:
+        return WeatherIcons.cloud;
+    }
+  }
 }
 
 class WeatherInformation extends StatelessWidget {
   final String weatherData;
-  final int weatherValue;
+  final dynamic weatherValue;
   final bool isWind;
+  final bool isHumidity;
   const WeatherInformation({
     Key key,
     this.weatherData,
     this.weatherValue,
     this.isWind = false,
+    this.isHumidity = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     String weatherValueFormatted = '';
-    if (!isWind) {
-      weatherValueFormatted = '$weatherValue%';
+    if ((!isWind) && (!isHumidity)) {
+      weatherValueFormatted = '${weatherValue} °F';
+    } else if (!isWind) {
+      weatherValueFormatted = '$weatherValue %';
     } else {
-      weatherValueFormatted = '${weatherValue}km/h';
+      weatherValueFormatted = '${weatherValue} mph';
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
