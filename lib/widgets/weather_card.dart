@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:weather_app/models/location.dart';
+import 'package:weather_icons/weather_icons.dart';
 
 import '../utility.dart';
 
@@ -15,6 +16,7 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // These are used for getting the proper time and updating it.
     DateTime current = DateTime.now();
     Stream timer = Stream.periodic(
         const Duration(seconds: 1), (i) => current = current.add(const Duration(seconds: 1)));
@@ -37,12 +39,15 @@ class WeatherCard extends StatelessWidget {
           ),
           Column(
             children: [
-              Text(
-                location.text,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 19,
-                  fontWeight: FontWeight.w600,
+              InkWell(
+                onTap: () {},
+                child: Text(
+                  location.text,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               StreamBuilder(
@@ -61,12 +66,39 @@ class WeatherCard extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 40),
-              Text(location.weather),
+              const SizedBox(height: 15),
+              Icon(
+                getIcon(location.weather),
+                color: Colors.white,
+                size: 50,
+              ),
             ],
           )
         ],
       ),
     );
+  }
+
+  // https://openweathermap.org/weather-conditions
+  // Converts ['weather']['main'] into an IconData to be displayed
+  IconData getIcon(String weather) {
+    switch (weather) {
+      case 'Thunderstorm':
+        return WeatherIcons.thunderstorm;
+      case 'Drizzle':
+        return WeatherIcons.sprinkle;
+      case 'Rain':
+        return WeatherIcons.rain;
+      case 'Snow':
+        return WeatherIcons.snow;
+      case 'Atmosphere':
+        return WeatherIcons.fog;
+      case 'Clear':
+        return WeatherIcons.day_sunny;
+      case 'Clouds':
+        return WeatherIcons.thunderstorm;
+      default:
+        return WeatherIcons.cloud;
+    }
   }
 }

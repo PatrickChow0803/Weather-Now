@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:weather_icons/weather_icons.dart';
+
 class LocationModel {
   final String text;
   final double temperature;
@@ -9,7 +12,6 @@ class LocationModel {
 
   // factory is used to instantiate an instance of the class
   factory LocationModel.fromJson(dynamic json) {
-    int time = DateTime.now().millisecondsSinceEpoch;
     // Use this in postman for reference
     // https://api.openweathermap.org/data/2.5/weather?zip=11229,us&appid=
     return LocationModel(

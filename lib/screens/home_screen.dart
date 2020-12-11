@@ -7,6 +7,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:weather_app/services/geo_location.dart';
 import 'package:weather_app/services/weather.dart';
 import 'package:weather_app/widgets/weather_card.dart';
+import 'package:weather_icons/weather_icons.dart';
 
 import '../models/location.dart';
 import '../utility.dart';
@@ -229,7 +230,9 @@ class _HomeForegroundState extends State<HomeForeground> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     for (LocationModel location in locations)
-                      WeatherCard(location: widget._currentLocationWeather)
+                      WeatherCard(
+                        location: widget._currentLocationWeather,
+                      )
                   ],
                 )
               ],
