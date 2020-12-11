@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:weather_app/models/location.dart';
+import 'package:weather_app/screens/details_screen.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../utility.dart';
@@ -22,63 +23,71 @@ class WeatherCard extends StatelessWidget {
     Stream timer = Stream.periodic(
         const Duration(seconds: 1), (i) => current = current.add(const Duration(seconds: 1)));
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8.0),
-      child: Stack(
-        alignment: AlignmentDirectional.center,
-        children: [
-          ColorFiltered(
-            colorFilter: const ColorFilter.mode(Colors.black45, BlendMode.darken),
-            child: CachedNetworkImage(
-              imageUrl: 'https://i.ibb.co/df35Y8Q/2.png',
-              height: getHeight(context) * 0.35,
-              width: getWidth(context) * 0.425,
-              fit: BoxFit.cover,
-              // placeholder: (context, url) => const Center(
-              //   child: CircularProgressIndicator(),
-              // ),
-              fadeInDuration: const Duration(seconds: 1),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => DetailsScreen(
+                  location: location,
+                )));
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8.0),
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            ColorFiltered(
+              colorFilter: const ColorFilter.mode(Colors.black45, BlendMode.darken),
+              child: CachedNetworkImage(
+                imageUrl: 'https://i.ibb.co/df35Y8Q/2.png',
+                height: getHeight(context) * 0.35,
+                width: getWidth(context) * 0.425,
+                fit: BoxFit.cover,
+                // placeholder: (context, url) => const Center(
+                //   child: CircularProgressIndicator(),
+                // ),
+                fadeInDuration: const Duration(seconds: 1),
+              ),
             ),
-          ),
-          Column(
-            children: [
-              InkWell(
-                onTap: () {},
-                child: Text(
-                  location.text,
+            Column(
+              children: [
+                InkWell(
+                  onTap: () {},
+                  child: Text(
+                    location.text,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                StreamBuilder(
+                  stream: timer,
+                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    // COULD ADD 'hh:mm:ss' into DateFormat's constructor
+                    return Text(DateFormat().add_jm().format(DateTime.fromMillisecondsSinceEpoch(
+                        current.millisecondsSinceEpoch + location.timezone)));
+                  },
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  '${location.temperature.round()}°F',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 19,
+                    fontSize: 40,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
-              StreamBuilder(
-                stream: timer,
-                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  // COULD ADD 'hh:mm:ss' into DateFormat's constructor
-                  return Text(DateFormat().add_jm().format(DateTime.fromMillisecondsSinceEpoch(
-                      current.millisecondsSinceEpoch + location.timezone)));
-                },
-              ),
-              const SizedBox(height: 40),
-              Text(
-                '${location.temperature.round()}°F',
-                style: const TextStyle(
+                const SizedBox(height: 15),
+                Icon(
+                  getIcon(location.weather),
                   color: Colors.white,
-                  fontSize: 40,
-                  fontWeight: FontWeight.w600,
+                  size: 50,
                 ),
-              ),
-              const SizedBox(height: 15),
-              Icon(
-                getIcon(location.weather),
-                color: Colors.white,
-                size: 50,
-              ),
-            ],
-          )
-        ],
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

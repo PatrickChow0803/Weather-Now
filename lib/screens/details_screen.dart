@@ -1,18 +1,23 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weather_app/models/location.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../utility.dart';
 
-class DetailScreen extends StatelessWidget {
+class DetailsScreen extends StatelessWidget {
+  final LocationModel location;
+  const DetailsScreen({this.location, Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Positioned(
           bottom: getHeight(context) / 2.4,
-          child: Image.network(
-            'https://www.tripsavvy.com/thmb/BpHEq6bT8Y4xvbcpYsrGJi8LSFo=/2119x1414/filters:fill(auto,1)/42nd-street-at-night-5c397abc4cedfd0001f90bad.jpg',
+          child: CachedNetworkImage(
+            imageUrl:
+                'https://www.tripsavvy.com/thmb/BpHEq6bT8Y4xvbcpYsrGJi8LSFo=/2119x1414/filters:fill(auto,1)/42nd-street-at-night-5c397abc4cedfd0001f90bad.jpg',
             height: getHeight(context),
             width: getWidth(context),
             fit: BoxFit.cover,
@@ -26,14 +31,18 @@ class DetailScreen extends StatelessWidget {
             color: const Color(0xFF2D2C35),
           ),
         ),
-        const DetailForeground()
+        DetailForeground(
+          location: location,
+        )
       ],
     );
   }
 }
 
 class DetailForeground extends StatelessWidget {
+  final LocationModel location;
   const DetailForeground({
+    this.location,
     Key key,
   }) : super(key: key);
 
@@ -44,7 +53,12 @@ class DetailForeground extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0,
-        leading: const Icon(Icons.arrow_back, size: 20),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 20),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
         actions: [
           IconButton(
             icon: const CircleAvatar(

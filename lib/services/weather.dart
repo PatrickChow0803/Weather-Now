@@ -9,7 +9,7 @@ class Weather {
 
   Future<void> getWeatherByCity(String city) async {
     try {
-      // api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
+      // https://api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
       final response = await http.get(
           'https://api.openweathermap.org/data/2.5/weather?q=$city&units=imperial&appid=$_apiKey');
       print(response.statusCode);
@@ -21,11 +21,11 @@ class Weather {
 
   Future<LocationModel> getWeatherByCoordinates(double latitude, double longitude) async {
     try {
-      // api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
+      // https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
       final response = await http.get(
           'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=imperial&appid=$_apiKey');
       print(response.body);
-      var decodedJson = jsonDecode(response.body);
+      final decodedJson = jsonDecode(response.body);
 
       LocationModel newLocation = LocationModel.fromJson(decodedJson);
       print(newLocation.text);
@@ -39,7 +39,7 @@ class Weather {
 
   Future<void> getWeatherByZipCode(String zipCode) async {
     try {
-      // api.openweathermap.org/data/2.5/forecast?zip={zip code},{country code}&appid={API key}
+      // https://api.openweathermap.org/data/2.5/forecast?zip={zip code},{country code}&appid={API key}
       final response = await http.get(
           'api.openweathermap.org/data/2.5/weather?zip=$zipCode&units=imperial&appid=$_apiKey');
 
