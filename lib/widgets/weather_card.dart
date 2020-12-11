@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -28,13 +29,15 @@ class WeatherCard extends StatelessWidget {
         children: [
           ColorFiltered(
             colorFilter: const ColorFilter.mode(Colors.black45, BlendMode.darken),
-            child: FadeInImage.memoryNetwork(
-              image: 'https://i.ibb.co/df35Y8Q/2.png',
+            child: CachedNetworkImage(
+              imageUrl: 'https://i.ibb.co/df35Y8Q/2.png',
               height: getHeight(context) * 0.35,
               width: getWidth(context) * 0.425,
               fit: BoxFit.cover,
-              placeholder: kTransparentImage,
-              fadeInDuration: const Duration(seconds: 2),
+              // placeholder: (context, url) => const Center(
+              //   child: CircularProgressIndicator(),
+              // ),
+              fadeInDuration: const Duration(seconds: 1),
             ),
           ),
           Column(

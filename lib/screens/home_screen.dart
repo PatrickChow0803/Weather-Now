@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -54,14 +55,16 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Positioned(
                 bottom: getHeight(context) / 2.4,
-                child: FadeInImage.memoryNetwork(
-                  image:
+                child: CachedNetworkImage(
+                  imageUrl:
                       'https://www.tripsavvy.com/thmb/BpHEq6bT8Y4xvbcpYsrGJi8LSFo=/2119x1414/filters:fill(auto,1)/42nd-street-at-night-5c397abc4cedfd0001f90bad.jpg',
                   height: getHeight(context),
                   width: getWidth(context),
                   fit: BoxFit.cover,
-                  placeholder: kTransparentImage,
-                  fadeInDuration: const Duration(seconds: 2),
+                  // placeholder: (context, url) => const Center(
+                  //   child: CircularProgressIndicator(),
+                  // ),
+                  fadeInDuration: const Duration(seconds: 1),
                 ),
               ),
               Positioned(
