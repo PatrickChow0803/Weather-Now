@@ -109,7 +109,7 @@ class WeatherCard extends StatelessWidget {
       case 'Clear':
         return WeatherIcons.day_sunny;
       case 'Clouds':
-        return WeatherIcons.thunderstorm;
+        return WeatherIcons.cloud;
       default:
         return WeatherIcons.cloud;
     }
