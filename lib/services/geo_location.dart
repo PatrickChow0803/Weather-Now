@@ -13,6 +13,10 @@ class GeoLocation {
 
   Future<void> getCurrentLocation() async {
     try {
+      if (!await Geolocator().isLocationServiceEnabled()) {
+        return Future.error('Location Service not enabled');
+      }
+
       final Position position =
           await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
 

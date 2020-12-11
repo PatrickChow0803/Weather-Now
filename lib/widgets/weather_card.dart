@@ -53,7 +53,8 @@ class WeatherCard extends StatelessWidget {
               StreamBuilder(
                 stream: timer,
                 builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                  return Text(DateFormat('hh:mm:ss').format(DateTime.fromMillisecondsSinceEpoch(
+                  // COULD ADD 'hh:mm:ss' into DateFormat's constructor
+                  return Text(DateFormat().add_jm().format(DateTime.fromMillisecondsSinceEpoch(
                       current.millisecondsSinceEpoch + location.timezone)));
                 },
               ),
