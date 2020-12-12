@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:weather_app/screens/details_screen.dart';
 import 'package:weather_app/services/geo_location.dart';
 import 'package:weather_app/services/weather.dart';
 import 'package:weather_app/widgets/weather_card.dart';
@@ -186,7 +187,9 @@ class _HomeForegroundState extends State<HomeForeground> {
                         splashRadius: 20,
                         onPressed: () async {
                           if (_searchByCity) {
-                            await widget._weather.getWeatherByCity(_searchController.text);
+                            final LocationModel _cityLocation =
+                                await widget._weather.getWeatherByCity(_searchController.text);
+                            goToDetailsScreen(context, _cityLocation);
                           } else {
                             await widget._weather.getWeatherByZipCode(_searchController.text);
                           }

@@ -3,14 +3,14 @@ import 'package:weather_icons/weather_icons.dart';
 
 class LocationModel {
   final String name;
-  final double temperature;
+  final dynamic temperature;
   final String weather;
   final String imageUrl;
   final int timezone;
-  final double feelsLike;
-  final int tempMin;
-  final double tempMax;
-  final double humidity;
+  final dynamic feelsLike;
+  final dynamic tempMin;
+  final dynamic tempMax;
+  final dynamic humidity;
   final double wind;
 
   LocationModel({
@@ -35,13 +35,13 @@ class LocationModel {
       // getting the current time from the API doesn't work since the value isn't updated every second.
       // therefore the actual time to display is calculated by getting the DateTime.now().millisecondsSinceEpoch + timezone
       timezone: json['timezone'] as int,
-      temperature: json['main']['temp'] as double,
+      temperature: json['main']['temp'] as dynamic,
       weather: json['weather'][0]['main'] as String,
-      feelsLike: json['main']['feels_like'] as double,
-      // for some reason this is an int instead of a double
-      tempMin: json['main']['temp_min'] as int,
-      tempMax: json['main']['temp_max'] as double,
-      humidity: json['main']['temp_max'] as double,
+      feelsLike: json['main']['feels_like'] as dynamic,
+      // for some reason tempMin is sometimes an Int or Double
+      tempMin: json['main']['temp_min'] as dynamic,
+      tempMax: json['main']['temp_max'] as dynamic,
+      humidity: json['main']['temp_max'] as dynamic,
       wind: json['wind']['speed'] as double,
       imageUrl: 'https://i.ibb.co/df35Y8Q/2.png',
     );

@@ -7,15 +7,17 @@ import 'package:weather_app/models/location.dart';
 class Weather {
   final String _apiKey = DotEnv().env['WEATHER_API'];
 
-  Future<void> getWeatherByCity(String city) async {
+  Future<LocationModel> getWeatherByCity(String city) async {
     try {
       // https://api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
       final response = await http.get(
           'https://api.openweathermap.org/data/2.5/weather?q=$city&units=imperial&appid=$_apiKey');
-      print(response.statusCode);
       print(response.body);
+      final decodedJson = jsonDecode(response.body);
+      return LocationModel.fromJson(decodedJson);
     } catch (e) {
-      print('getWeatherByCity Error:$e');
+      print('getWeatherByCity Error: $e');
+      return LocationModel();
     }
   }
 
@@ -27,10 +29,7 @@ class Weather {
       print(response.body);
       final decodedJson = jsonDecode(response.body);
 
-      LocationModel newLocation = LocationModel.fromJson(decodedJson);
-      print(newLocation.name);
-
-      return newLocation;
+      return LocationModel.fromJson(decodedJson);
     } catch (e) {
       print('getWeatherByCoordinates Error: $e');
       return LocationModel();

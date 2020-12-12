@@ -84,7 +84,7 @@ class DetailForeground extends StatelessWidget {
             Icon(
               getIcon(location.weather),
               color: Colors.white,
-              size: 100,
+              size: 80,
             ),
             DefaultTextStyle(
               style: GoogleFonts.raleway(),
@@ -114,7 +114,7 @@ class DetailForeground extends StatelessWidget {
                     '${location.temperature.round()}°F',
                     style: const TextStyle(fontSize: 80),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
