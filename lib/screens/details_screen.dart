@@ -106,7 +106,7 @@ class DetailForeground extends StatelessWidget {
                     builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                       // COULD ADD 'hh:mm:ss' into DateFormat's constructor
                       return Text(
-                        DateFormat().add_jm().format(DateTime.fromMillisecondsSinceEpoch(
+                        DateFormat('hh:mm:ss: a').format(DateTime.fromMillisecondsSinceEpoch(
                             // 1000 milliseconds in one second, so you need to multiply by 1000
                             // Time is calculated by getting the device's current time, and then adding onto the difference in seconds between
                             // the device's time zone with the location's time zone.

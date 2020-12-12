@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -26,6 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
     _loadingApp = !_loadingApp;
 
     // After getting the coordinates, use them to get the weather
@@ -183,12 +182,15 @@ class _HomeForegroundState extends State<HomeForeground> {
                     suffixIcon: IconButton(
                         splashRadius: 20,
                         onPressed: () async {
+                          FocusScope.of(context).unfocus();
                           if (_searchByCity) {
                             final LocationModel _cityLocation =
                                 await widget._weather.getWeatherByCity(_searchController.text);
                             goToDetailsScreen(context, _cityLocation);
                           } else {
-                            await widget._weather.getWeatherByZipCode(_searchController.text);
+                            final LocationModel _cityLocation =
+                                await widget._weather.getWeatherByZipCode(_searchController.text);
+                            goToDetailsScreen(context, _cityLocation);
                           }
                         },
                         icon: const Icon(Icons.search, color: Colors.white)),
@@ -200,10 +202,15 @@ class _HomeForegroundState extends State<HomeForeground> {
                     focusedBorder: outlineInputBorder,
                   ),
                   onSubmitted: (value) async {
+                    FocusScope.of(context).unfocus();
                     if (_searchByCity) {
-                      await widget._weather.getWeatherByCity(value);
+                      final LocationModel _cityLocation =
+                          await widget._weather.getWeatherByCity(_searchController.text);
+                      goToDetailsScreen(context, _cityLocation);
                     } else {
-                      await widget._weather.getWeatherByZipCode(value);
+                      final LocationModel _cityLocation =
+                          await widget._weather.getWeatherByZipCode(_searchController.text);
+                      goToDetailsScreen(context, _cityLocation);
                     }
                   },
                 ),

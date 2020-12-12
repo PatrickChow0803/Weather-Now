@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ntp/ntp.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:weather_app/models/location.dart';
 import 'package:weather_app/screens/details_screen.dart';
@@ -65,7 +66,8 @@ class WeatherCard extends StatelessWidget {
                   stream: timer,
                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     // COULD ADD 'hh:mm:ss' into DateFormat's constructor
-                    return Text(DateFormat().add_jm().format(DateTime.fromMillisecondsSinceEpoch(
+                    // COULD HAVE JUST ADDED .add_jm() instead of doing 'hh:mm:ss a'
+                    return Text(DateFormat('hh:mm:ss a').format(DateTime.fromMillisecondsSinceEpoch(
                         current.millisecondsSinceEpoch + location.timezone)));
                   },
                 ),
@@ -90,6 +92,12 @@ class WeatherCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<DateTime> getCurrentTime() async {
+    DateTime currentTime = DateTime.now();
+    NTP.getNtpOffset().then((value) => currentTime.add(Duration(milliseconds: value)));
+    return currentTime;
   }
 
   // https://openweathermap.org/weather-conditions

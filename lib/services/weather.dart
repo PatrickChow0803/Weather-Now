@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -15,6 +16,9 @@ class Weather {
       print(response.body);
       final decodedJson = jsonDecode(response.body);
       return LocationModel.fromJson(decodedJson);
+    } on HttpException catch (e) {
+      // do ...
+      return LocationModel();
     } catch (e) {
       print('getWeatherByCity Error: $e');
       return LocationModel();
@@ -36,15 +40,18 @@ class Weather {
     }
   }
 
-  Future<void> getWeatherByZipCode(String zipCode) async {
+  Future<LocationModel> getWeatherByZipCode(String zipCode) async {
     try {
       // https://api.openweathermap.org/data/2.5/forecast?zip={zip code},{country code}&appid={API key}
       final response = await http.get(
-          'api.openweathermap.org/data/2.5/weather?zip=$zipCode&units=imperial&appid=$_apiKey');
+          'https://api.openweathermap.org/data/2.5/weather?zip=$zipCode&units=imperial&appid=$_apiKey');
 
       print(response.body);
+      final decodedJson = jsonDecode(response.body);
+      return LocationModel.fromJson(decodedJson);
     } catch (e) {
       print('getWeatherByZipCode Error: $e');
+      return LocationModel();
     }
   }
 }
