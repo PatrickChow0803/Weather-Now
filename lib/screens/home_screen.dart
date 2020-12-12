@@ -4,12 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:transparent_image/transparent_image.dart';
-import 'package:weather_app/screens/details_screen.dart';
 import 'package:weather_app/services/geo_location.dart';
 import 'package:weather_app/services/weather.dart';
 import 'package:weather_app/widgets/weather_card.dart';
-import 'package:weather_icons/weather_icons.dart';
 
 import '../models/location.dart';
 import '../utility.dart';

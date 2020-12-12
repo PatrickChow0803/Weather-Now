@@ -51,8 +51,11 @@ class DetailForeground extends StatelessWidget {
   Widget build(BuildContext context) {
     // These are used for getting the proper time and updating it.
     DateTime current = DateTime.now();
+
     final Stream timer = Stream.periodic(
         const Duration(seconds: 1), (i) => current = current.add(const Duration(seconds: 1)));
+
+    int currentUtcEpoch = (DateTime.now().toUtc().millisecondsSinceEpoch / 1000).round();
 
     return Scaffold(
       backgroundColor: Colors.black54,
@@ -104,7 +107,11 @@ class DetailForeground extends StatelessWidget {
                       // COULD ADD 'hh:mm:ss' into DateFormat's constructor
                       return Text(
                         DateFormat().add_jm().format(DateTime.fromMillisecondsSinceEpoch(
-                            current.millisecondsSinceEpoch + location.timezone)),
+                            // 1000 milliseconds in one second, so you need to multiply by 1000
+                            // Time is calculated by getting the device's current time, and then adding onto the difference in seconds between
+                            // the device's time zone with the location's time zone.
+                            DateTime.now().millisecondsSinceEpoch +
+                                getSecondDifference(location.timezone) * 1000)),
                         style: const TextStyle(fontSize: 24),
                       );
                     },
@@ -165,6 +172,20 @@ class DetailForeground extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  int getSecondDifference(int otherSeconds) {
+    final now = DateTime.now();
+    // use timeZoneOffset to see the number of hour difference from utc
+    final timeZoneOffset = now.timeZoneOffset;
+    // because the value of timeZoneOffSet is "-5:00"...
+    // use subString to only get the hours
+    final String totalHourIs = timeZoneOffset.toString().substring(1, 2);
+    // Convert the String hours to int and multiply it by 3600, which is the number of seconds in an hour
+    // Then add onto the seconds from timezone that the API gives
+    print('Difference in Seconds is: ${(int.parse(totalHourIs) * 3600) + otherSeconds}');
+
+    return (int.parse(totalHourIs) * 3600) + otherSeconds;
   }
 
   // https://openweathermap.org/weather-conditions

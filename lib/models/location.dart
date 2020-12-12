@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 class LocationModel {
+  // For some reason the API sometimes returns an int, sometimes a double
+  // Therefore some of the number related variables are as type dynamic
   final String name;
   final dynamic temperature;
   final String weather;
