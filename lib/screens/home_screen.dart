@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:weather_app/providers/location_provider.dart';
 import 'package:weather_app/services/geo_location.dart';
 import 'package:weather_app/services/weather.dart';
 import 'package:weather_app/widgets/weather_card.dart';
@@ -18,19 +20,26 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _weather = Weather();
   final _location = GeoLocation();
+  var _locationProvider = LocationProvider();
   bool _loadingApp = false;
-  LocationModel _currentLocationWeather;
 
   @override
   void initState() {
     super.initState();
 
+    // Need this if you're going to be using the Provider in initstate
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // Both of these lines do the same thing
+      _locationProvider = context.read<LocationProvider>();
+      // _locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    });
+
     _loadingApp = !_loadingApp;
 
     // After getting the coordinates, use them to get the weather
-    _location.getCurrentLocation().then((value) =>
-        _weather.getWeatherByCoordinates(_location.latitude, _location.longitude).then((value) {
-          _currentLocationWeather = value;
+    _location.getCurrentLocation().then((value) => _locationProvider
+            .addLocationByCoordinates(latitude: _location.latitude, longitude: _location.longitude)
+            .then((value) {
           changeLoading();
         }));
   }
@@ -73,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               // This Scaffold causes a fade out effect
-              HomeForeground(_weather, _location, _currentLocationWeather),
+              HomeForeground(_weather, _location),
             ],
           );
   }
@@ -82,10 +91,8 @@ class _MyHomePageState extends State<MyHomePage> {
 class HomeForeground extends StatefulWidget {
   final Weather _weather;
   final GeoLocation _location;
-  final LocationModel _currentLocationWeather;
 
-  const HomeForeground(this._weather, this._location, this._currentLocationWeather, {Key key})
-      : super(key: key);
+  const HomeForeground(this._weather, this._location, {Key key}) : super(key: key);
 
   @override
   _HomeForegroundState createState() => _HomeForegroundState();
@@ -97,6 +104,8 @@ class _HomeForegroundState extends State<HomeForeground> {
 
   @override
   Widget build(BuildContext context) {
+    final locationProvider = Provider.of<LocationProvider>(context);
+
     // used to give color and shape to the Text Field
     const outlineInputBorder = OutlineInputBorder(
       borderSide: BorderSide(color: Colors.white),
@@ -120,8 +129,16 @@ class _HomeForegroundState extends State<HomeForeground> {
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () {
-            widget._weather
-                .getWeatherByCoordinates(widget._location.latitude, widget._location.longitude);
+            print('Testing BEFORE');
+            // widget._weather
+            //     .getWeatherByCoordinates(widget._location.latitude, widget._location.longitude);
+            locationProvider.addLocationByCoordinates(
+                longitude: widget._location.longitude, latitude: widget._location.latitude);
+            print('Testing AFTER');
+            for (LocationModel location in locationProvider.locations) {
+              print('TESTING DONE: ${location.name}');
+              print('TOTAL AMOUNT OF LOCATIONS FOUND: ${locationProvider.locations.length}');
+            }
           },
         ),
         actions: [
@@ -236,14 +253,15 @@ class _HomeForegroundState extends State<HomeForeground> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    for (LocationModel location in locations)
-                      WeatherCard(
-                        location: widget._currentLocationWeather,
-                      )
-                  ],
+                Container(
+                  height: 100,
+                  width: 100,
+                  child: ListView.builder(
+                    itemCount: locationProvider.locations.length,
+                    itemBuilder: (context, index) {
+                      return WeatherCard(location: locationProvider.locations[index]);
+                    },
+                  ),
                 )
               ],
             ),

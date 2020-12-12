@@ -2,20 +2,21 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
-import 'package:transparent_image/transparent_image.dart';
+import 'package:provider/provider.dart';
 import 'package:weather_app/models/location.dart';
+import 'package:weather_app/providers/location_provider.dart';
 import 'package:weather_app/screens/details_screen.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../utility.dart';
 
 class WeatherCard extends StatelessWidget {
+  final LocationModel location;
+
   const WeatherCard({
     Key key,
-    @required this.location,
+    this.location,
   }) : super(key: key);
-
-  final LocationModel location;
 
   @override
   Widget build(BuildContext context) {
