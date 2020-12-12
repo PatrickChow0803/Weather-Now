@@ -1,4 +1,4 @@
-* UI Idea from https://dribbble.com/shots/14562207--22-Weather-Forecast-App-MobileApp-Concept
+* UI Concept from https://dribbble.com/shots/14562207--22-Weather-Forecast-App-MobileApp-Concept
 
 # weather_app
 
