@@ -189,7 +189,7 @@ class DetailForeground extends StatelessWidget {
     final String totalHourIs = timeZoneOffset.toString().substring(1, 2);
     // Convert the String hours to int and multiply it by 3600, which is the number of seconds in an hour
     // Then add onto the seconds from timezone that the API gives
-    print('Difference in Seconds is: ${(int.parse(totalHourIs) * 3600) + otherSeconds}');
+    // print('Difference in Seconds is: ${(int.parse(totalHourIs) * 3600) + otherSeconds}');
 
     return (int.parse(totalHourIs) * 3600) + otherSeconds;
   }

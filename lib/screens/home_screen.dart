@@ -215,7 +215,7 @@ class _HomeForegroundState extends State<HomeForeground> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 50),
-                if (!_isAnonymous)
+                if (!(_authProvider.auth.currentUser.displayName == null))
                   Text(
                     'Hello $_username',
                     style: const TextStyle(fontSize: 30),
