@@ -89,11 +89,44 @@ class DetailForeground extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 18),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              getIcon(location.weather),
-              color: Colors.white,
-              size: 80,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // This is purely used to space out the widgets in the row
+                Opacity(
+                  opacity: 0,
+                  child: OutlinedButton(
+                    onPressed: () {},
+                    style: OutlinedButton.styleFrom(
+                        primary: Colors.white,
+                        side: const BorderSide(color: Colors.white),
+                        shape: const CircleBorder()),
+                    child: const Icon(Icons.more_horiz),
+                  ),
+                ),
+                Icon(
+                  getIcon(location.weather),
+                  color: Colors.white,
+                  size: 80,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: OutlinedButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Location has been added to Saved Locations'),
+                      ));
+                    },
+                    style: OutlinedButton.styleFrom(
+                        primary: Colors.white,
+                        side: const BorderSide(color: Colors.white),
+                        shape: const CircleBorder()),
+                    child: const Icon(Icons.add),
+                  ),
+                ),
+              ],
             ),
             DefaultTextStyle(
               style: GoogleFonts.raleway(),
