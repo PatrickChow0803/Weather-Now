@@ -45,7 +45,6 @@ class WeatherCard extends StatelessWidget {
           buttons: [
             DialogButton(
               onPressed: () {
-                locationProvider.removeLocation(location.name);
                 Navigator.pop(context);
               },
               color: Colors.lightGreen[100],
@@ -55,7 +54,17 @@ class WeatherCard extends StatelessWidget {
               ),
             ),
             DialogButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                if (locationProvider.locations[0] == location) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Your home location can\'t be removed"),
+                  ));
+                  Navigator.pop(context);
+                  return;
+                }
+                locationProvider.removeLocation(location.name);
+                Navigator.pop(context);
+              },
               color: Colors.redAccent[200],
               child: const Text(
                 "Remove",

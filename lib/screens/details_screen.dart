@@ -74,7 +74,7 @@ class DetailForeground extends StatelessWidget {
           },
         ),
         actions: [
-          if (!_isAnonymous)
+          if (_authProvider.auth.currentUser.photoURL != null)
             IconButton(
               icon: CircleAvatar(
                 radius: 15,

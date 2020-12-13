@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:weather_app/models/location.dart';
@@ -25,15 +26,20 @@ class LocationProvider with ChangeNotifier {
     return [..._locations];
   }
 
-  Future<String> addLocationByCity(String city) async {
+  Future<String> addLocationByCity(String city, String userId) async {
     try {
       // https://api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
       final response = await http.get(
           'https://api.openweathermap.org/data/2.5/weather?q=$city&units=imperial&appid=$_apiKey');
       print(response.body);
       final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
-      _locations.add(LocationModel.fromJson(decodedJson));
+      _locations.insert(1, LocationModel.fromJson(decodedJson));
       notifyListeners();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('locations')
+          .add({'savedLocations': _locations[0].name});
       return 'Success';
     } on http.ClientException catch (e) {
       // do ...
@@ -69,7 +75,7 @@ class LocationProvider with ChangeNotifier {
           'https://api.openweathermap.org/data/2.5/weather?zip=$zipCode&units=imperial&appid=$_apiKey');
       print(response.body);
       final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
-      _locations.add(LocationModel.fromJson(decodedJson));
+      _locations.insert(1, LocationModel.fromJson(decodedJson));
       notifyListeners();
       return 'Success';
     } catch (e) {

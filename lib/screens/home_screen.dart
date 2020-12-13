@@ -157,10 +157,10 @@ class _HomeForegroundState extends State<HomeForeground> {
                       color: Colors.yellowAccent,
                     ),
                     const SizedBox(height: 20),
-                    const Text(
+                    Text(
                       'Weather Now',
-                      style: TextStyle(fontSize: 30, color: Colors.white70),
-                    )
+                      style: GoogleFonts.raleway(fontSize: 30, color: Colors.white70),
+                    ),
                   ],
                 )),
               ),
@@ -192,7 +192,7 @@ class _HomeForegroundState extends State<HomeForeground> {
         backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
-          if (!_isAnonymous)
+          if (_authProvider.auth.currentUser.photoURL != null)
             IconButton(
               icon: CircleAvatar(
                 radius: 15,
@@ -334,10 +334,12 @@ class _HomeForegroundState extends State<HomeForeground> {
   // Future<String> since that's the return type, (String searchInput) since that's the argument needed for the method called
   Future<void> searchByCityOrZip({bool searchByCity, String input}) async {
     final locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     if (searchByCity) {
-      final returnValue = await locationProvider.addLocationByCity(input);
+      final returnValue =
+          await locationProvider.addLocationByCity(input, authProvider.auth.currentUser.uid);
       if (returnValue == 'Success') {
-        goToDetailsScreen(context, locationProvider.locations.last);
+        goToDetailsScreen(context, locationProvider.locations[1]);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(returnValue),
@@ -346,7 +348,7 @@ class _HomeForegroundState extends State<HomeForeground> {
     } else {
       final returnValue = await locationProvider.addLocationByZip(input);
       if (returnValue == 'Success') {
-        goToDetailsScreen(context, locationProvider.locations.last);
+        goToDetailsScreen(context, locationProvider.locations[1]);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(returnValue),
