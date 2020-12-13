@@ -1,16 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:weather_app/services/auth.dart';
 
 class Login extends StatefulWidget {
-  final FirebaseAuth auth;
-  final FirebaseFirestore firestore;
-
   const Login({
     Key key,
-    @required this.auth,
-    @required this.firestore,
   }) : super(key: key);
   @override
   _LoginState createState() => _LoginState();
@@ -21,8 +17,9 @@ class _LoginState extends State<Login> {
   final TextEditingController _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
-      backgroundColor: Colors.grey[700],
+      backgroundColor: Colors.grey[500],
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(60.0),
@@ -52,7 +49,7 @@ class _LoginState extends State<Login> {
                 RaisedButton(
                   key: const ValueKey("signIn"),
                   onPressed: () async {
-                    final String returnVal = await Auth(auth: widget.auth).signIn(
+                    final String returnVal = await authProvider.signIn(
                       email: _emailController.text,
                       password: _passwordController.text,
                     );
@@ -68,10 +65,10 @@ class _LoginState extends State<Login> {
                   },
                   child: const Text("Sign In"),
                 ),
-                FlatButton(
+                RaisedButton(
                   key: const ValueKey("createAccount"),
                   onPressed: () async {
-                    final String returnVal = await Auth(auth: widget.auth).createAccount(
+                    final String returnVal = await authProvider.createAccount(
                       email: _emailController.text,
                       password: _passwordController.text,
                     );
@@ -86,7 +83,22 @@ class _LoginState extends State<Login> {
                     }
                   },
                   child: const Text("Create Account"),
-                )
+                ),
+                const SizedBox(height: 50),
+                InkWell(
+                    onTap: () async {
+                      final String returnVal = await authProvider.signInAnonymously();
+                      if (returnVal == "Success") {
+                        _emailController.clear();
+                        _passwordController.clear();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(returnVal),
+                          duration: const Duration(seconds: 2),
+                        ));
+                      }
+                    },
+                    child: const Text("Anonymous Login"))
               ],
             );
           }),

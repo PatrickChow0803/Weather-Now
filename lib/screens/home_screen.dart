@@ -14,9 +14,9 @@ import '../models/location.dart';
 import '../utility.dart';
 
 class MyHomePage extends StatefulWidget {
-  final FirebaseAuth auth;
-  final FirebaseFirestore firestore;
-  const MyHomePage({Key key, this.auth, this.firestore}) : super(key: key);
+  const MyHomePage({
+    Key key,
+  }) : super(key: key);
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }

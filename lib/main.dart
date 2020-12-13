@@ -15,6 +15,9 @@ Future<void> main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider.value(
       value: LocationProvider(),
+    ),
+    Provider<AuthProvider>(
+      create: (BuildContext context) => AuthProvider(),
     )
   ], child: MyApp()));
 }
@@ -62,25 +65,21 @@ class MyApp extends StatelessWidget {
 }
 
 class Root extends StatelessWidget {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Root({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return StreamBuilder(
-      stream: Auth(auth: _auth).user,
+      stream: authProvider.user,
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
         // if the auth stream is working..
         if (snapshot.connectionState == ConnectionState.active) {
           if (snapshot.data?.uid == null) {
-            return Login(auth: _auth, firestore: _firestore);
+            return const Login();
           } else {
             // Home screen
-            return MyHomePage(
-              auth: _auth,
-              firestore: _firestore,
-            );
+            return const MyHomePage();
           }
         } else {
           return const Scaffold(
