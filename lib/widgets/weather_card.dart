@@ -20,6 +20,8 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locationProvider = Provider.of<LocationProvider>(context);
+
     // These are used for getting the proper time and updating it.
     DateTime current = DateTime.now();
     final Stream timer = Stream.periodic(
@@ -31,6 +33,9 @@ class WeatherCard extends StatelessWidget {
             builder: (_) => DetailsScreen(
                   location: location,
                 )));
+      },
+      onLongPress: () {
+        locationProvider.removeLocation(location.name);
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
