@@ -87,4 +87,9 @@ class LocationProvider with ChangeNotifier {
       return "Couldn't find Zip";
     }
   }
+
+  void removeLocation(String cityName) {
+    _locations.removeWhere((location) => location.name == cityName);
+    notifyListeners();
+  }
 }
