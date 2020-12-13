@@ -20,7 +20,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _weather = Weather();
   final _location = GeoLocation();
-  var _locationProvider = LocationProvider();
+  LocationProvider _locationProvider;
   bool _loadingApp = false;
 
   @override
@@ -104,6 +104,7 @@ class _HomeForegroundState extends State<HomeForeground> {
 
   @override
   Widget build(BuildContext context) {
+    print(' This was called in build widget');
     final locationProvider = Provider.of<LocationProvider>(context);
 
     // used to give color and shape to the Text Field
@@ -128,17 +129,14 @@ class _HomeForegroundState extends State<HomeForeground> {
         iconTheme: const IconThemeData(color: Colors.white),
         leading: IconButton(
           icon: const Icon(Icons.menu),
-          onPressed: () {
-            print('Testing BEFORE');
+          onPressed: () async {
+            // print('TOTAL AMOUNT OF LOCATIONS FOUND BEFORE: ${locationProvider.locations.length}');
             // widget._weather
             //     .getWeatherByCoordinates(widget._location.latitude, widget._location.longitude);
-            locationProvider.addLocationByCoordinates(
+            await locationProvider.addLocationByCoordinates(
                 longitude: widget._location.longitude, latitude: widget._location.latitude);
-            print('Testing AFTER');
-            for (LocationModel location in locationProvider.locations) {
-              print('TESTING DONE: ${location.name}');
-              print('TOTAL AMOUNT OF LOCATIONS FOUND: ${locationProvider.locations.length}');
-            }
+
+            // print('TOTAL AMOUNT OF LOCATIONS FOUND AFTER: ${locationProvider.locations.length}');
           },
         ),
         actions: [
@@ -254,13 +252,29 @@ class _HomeForegroundState extends State<HomeForeground> {
                 ),
                 const SizedBox(height: 10),
                 Container(
-                  height: 100,
-                  width: 100,
-                  child: ListView.builder(
-                    itemCount: locationProvider.locations.length,
-                    itemBuilder: (context, index) {
-                      return WeatherCard(location: locationProvider.locations[index]);
-                    },
+                  height: getHeight(context) * .375,
+                  width: getWidth(context),
+                  child: Consumer<LocationProvider>(
+                    builder: (
+                      conntext,
+                      locationData,
+                      child,
+                    ) =>
+                        ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: locationData.locations.length,
+                      itemBuilder: (context, index) {
+                        print(' This was called in consumer widget');
+                        print('Length of locations: ${locationData.locations.length}');
+                        return Row(
+                          children: [
+                            WeatherCard(location: locationData.locations[index]),
+                            const SizedBox(width: 20),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 )
               ],

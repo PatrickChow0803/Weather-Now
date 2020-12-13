@@ -17,7 +17,17 @@ class LocationProvider with ChangeNotifier {
         feelsLike: 123,
         humidity: 20,
         timezone: 0,
-        wind: 5)
+        wind: 5),
+    LocationModel(
+        name: 'Test',
+        weather: 'Cloudy',
+        temperature: 55,
+        tempMax: 100,
+        tempMin: 5,
+        feelsLike: 123,
+        humidity: 20,
+        timezone: 0,
+        wind: 5),
   ];
 
   List<LocationModel> get locations {

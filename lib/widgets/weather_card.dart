@@ -52,6 +52,7 @@ class WeatherCard extends StatelessWidget {
             ),
             Column(
               children: [
+                const SizedBox(height: 20),
                 InkWell(
                   onTap: () {},
                   child: Text(
