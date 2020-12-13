@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,7 +14,9 @@ import '../models/location.dart';
 import '../utility.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key}) : super(key: key);
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+  const MyHomePage({Key key, this.auth, this.firestore}) : super(key: key);
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -34,21 +38,21 @@ class _MyHomePageState extends State<MyHomePage> {
       // _locationProvider = Provider.of<LocationProvider>(context, listen: false);
     });
 
-    _loadingApp = !_loadingApp;
+    // _loadingApp = !_loadingApp;
 
     // After getting the coordinates, use them to get the weather
     _location.getCurrentLocation().then((value) => _locationProvider
             .addLocationByCoordinates(latitude: _location.latitude, longitude: _location.longitude)
             .then((value) {
-          changeLoading();
+          // changeLoading();
         }));
   }
 
-  void changeLoading() {
-    setState(() {
-      _loadingApp = !_loadingApp;
-    });
-  }
+  // void changeLoading() {
+  //   setState(() {
+  //     _loadingApp = !_loadingApp;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
