@@ -70,5 +70,18 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addLocationByZip() async {}
+  Future<void> addLocationByZip(String zipCode) async {
+    try {
+      // https://api.openweathermap.org/data/2.5/forecast?zip={zip code},{country code}&appid={API key}
+      final response = await http.get(
+          'https://api.openweathermap.org/data/2.5/weather?zip=$zipCode&units=imperial&appid=$_apiKey');
+      print(response.body);
+      final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
+      _locations.add(LocationModel.fromJson(decodedJson));
+      notifyListeners();
+    } catch (e) {
+      print('getWeatherByZipCode Error: $e');
+      return LocationModel();
+    }
+  }
 }

@@ -202,9 +202,8 @@ class _HomeForegroundState extends State<HomeForeground> {
                             await locationProvider.addLocationByCity(_searchController.text);
                             goToDetailsScreen(context, locationProvider.locations.last);
                           } else {
-                            final LocationModel _cityLocation =
-                                await widget._weather.getWeatherByZipCode(_searchController.text);
-                            goToDetailsScreen(context, _cityLocation);
+                            locationProvider.addLocationByZip(_searchController.text);
+                            goToDetailsScreen(context, locationProvider.locations.last);
                           }
                         },
                         icon: const Icon(Icons.search, color: Colors.white)),
@@ -221,9 +220,8 @@ class _HomeForegroundState extends State<HomeForeground> {
                       await locationProvider.addLocationByCity(_searchController.text);
                       goToDetailsScreen(context, locationProvider.locations.last);
                     } else {
-                      final LocationModel _cityLocation =
-                          await widget._weather.getWeatherByZipCode(_searchController.text);
-                      goToDetailsScreen(context, _cityLocation);
+                      locationProvider.addLocationByZip(_searchController.text);
+                      goToDetailsScreen(context, locationProvider.locations.last);
                     }
                   },
                 ),
