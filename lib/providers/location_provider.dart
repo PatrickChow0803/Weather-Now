@@ -9,26 +9,16 @@ import 'package:http/http.dart' as http;
 class LocationProvider with ChangeNotifier {
   final String _apiKey = DotEnv().env['WEATHER_API'];
   final List<LocationModel> _locations = [
-    LocationModel(
-        name: 'Test',
-        weather: 'Cloudy',
-        temperature: 55,
-        tempMax: 100,
-        tempMin: 5,
-        feelsLike: 123,
-        humidity: 20,
-        timezone: 0,
-        wind: 5),
     // LocationModel(
-    //     name: 'Test',
-    //     weather: 'Cloudy',
-    //     temperature: 55,
-    //     tempMax: 100,
-    //     tempMin: 5,
-    //     feelsLike: 123,
-    //     humidity: 20,
-    //     timezone: 0,
-    //     wind: 5),
+    // name: 'Test',
+    // weather: 'Cloudy',
+    // temperature: 55,
+    // tempMax: 100,
+    // tempMin: 5,
+    // feelsLike: 123,
+    // humidity: 20,
+    // timezone: 0,
+    // wind: 5),
   ];
 
   List<LocationModel> get locations {

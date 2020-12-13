@@ -193,12 +193,9 @@ class _HomeForegroundState extends State<HomeForeground> {
                         splashRadius: 20,
                         onPressed: () async {
                           FocusScope.of(context).unfocus();
-                          searchByCityOrZip(
+                          await searchByCityOrZip(
                             searchByCity: _searchByCity,
                             input: _searchController.text,
-                            addLocationByCity: locationProvider.addLocationByCity,
-                            addLocationByZip: locationProvider.addLocationByZip,
-                            locationList: locationProvider.locations,
                           );
                         },
                         icon: const Icon(Icons.search, color: Colors.white)),
@@ -211,12 +208,9 @@ class _HomeForegroundState extends State<HomeForeground> {
                   ),
                   onSubmitted: (value) async {
                     FocusScope.of(context).unfocus();
-                    searchByCityOrZip(
+                    await searchByCityOrZip(
                       searchByCity: _searchByCity,
                       input: _searchController.text,
-                      addLocationByCity: locationProvider.addLocationByCity,
-                      addLocationByZip: locationProvider.addLocationByZip,
-                      locationList: locationProvider.locations,
                     );
                   },
                 ),
@@ -279,25 +273,21 @@ class _HomeForegroundState extends State<HomeForeground> {
   // Take in a bool to check to see if either addLocationByCity or addLocationByZip should be called
   // Pass in the two methods.
   // Future<String> since that's the return type, (String searchInput) since that's the argument needed for the method called
-  Future<void> searchByCityOrZip(
-      {bool searchByCity,
-      String input,
-      List<LocationModel> locationList,
-      Future<String> Function(String searchInput) addLocationByCity,
-      Future<String> Function(String searchInput) addLocationByZip}) async {
+  Future<void> searchByCityOrZip({bool searchByCity, String input}) async {
+    final locationProvider = Provider.of<LocationProvider>(context, listen: false);
     if (searchByCity) {
-      final returnValue = await addLocationByCity(input);
+      final returnValue = await locationProvider.addLocationByCity(input);
       if (returnValue == 'Success') {
-        goToDetailsScreen(context, locationList.last);
+        goToDetailsScreen(context, locationProvider.locations.last);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(returnValue),
         ));
       }
     } else {
-      final returnValue = await addLocationByZip(input);
+      final returnValue = await locationProvider.addLocationByZip(input);
       if (returnValue == 'Success') {
-        goToDetailsScreen(context, locationList.last);
+        goToDetailsScreen(context, locationProvider.locations.last);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(returnValue),
