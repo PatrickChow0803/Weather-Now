@@ -35,7 +35,7 @@ class LocationProvider with ChangeNotifier {
     return [..._locations];
   }
 
-  Future<void> addLocationByCity(String city) async {
+  Future<String> addLocationByCity(String city) async {
     try {
       // https://api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
       final response = await http.get(
@@ -44,16 +44,17 @@ class LocationProvider with ChangeNotifier {
       final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
       _locations.add(LocationModel.fromJson(decodedJson));
       notifyListeners();
-    } on HttpException catch (e) {
+      return 'Success';
+    } on http.ClientException catch (e) {
       // do ...
-      return LocationModel();
+      return 'Invalid City';
     } catch (e) {
-      print('getWeatherByCity Error: $e');
-      rethrow;
+      // return 'City Not Found';
+      return "Couldn't find City";
     }
   }
 
-  Future<void> addLocationByCoordinates({double latitude, double longitude}) async {
+  Future<String> addLocationByCoordinates({double latitude, double longitude}) async {
     try {
       // https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
       final response = await http.get(
@@ -64,13 +65,14 @@ class LocationProvider with ChangeNotifier {
       final locationTest = LocationModel.fromJson(decodedJson);
       _locations.add(locationTest);
       notifyListeners();
+      return 'Success';
     } catch (e) {
-      print('getWeatherByCoordinates Error: $e');
+      // print('getWeatherByCoordinates Error: $e');
       rethrow;
     }
   }
 
-  Future<void> addLocationByZip(String zipCode) async {
+  Future<String> addLocationByZip(String zipCode) async {
     try {
       // https://api.openweathermap.org/data/2.5/forecast?zip={zip code},{country code}&appid={API key}
       final response = await http.get(
@@ -79,9 +81,10 @@ class LocationProvider with ChangeNotifier {
       final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
       _locations.add(LocationModel.fromJson(decodedJson));
       notifyListeners();
+      return 'Success';
     } catch (e) {
-      print('getWeatherByZipCode Error: $e');
-      return LocationModel();
+      // print('getWeatherByZipCode Error: $e');
+      return "Couldn't find Zip";
     }
   }
 }

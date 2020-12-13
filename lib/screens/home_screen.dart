@@ -130,13 +130,8 @@ class _HomeForegroundState extends State<HomeForeground> {
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () async {
-            // print('TOTAL AMOUNT OF LOCATIONS FOUND BEFORE: ${locationProvider.locations.length}');
-            // widget._weather
-            //     .getWeatherByCoordinates(widget._location.latitude, widget._location.longitude);
             await locationProvider.addLocationByCoordinates(
                 longitude: widget._location.longitude, latitude: widget._location.latitude);
-
-            // print('TOTAL AMOUNT OF LOCATIONS FOUND AFTER: ${locationProvider.locations.length}');
           },
         ),
         actions: [
@@ -198,13 +193,13 @@ class _HomeForegroundState extends State<HomeForeground> {
                         splashRadius: 20,
                         onPressed: () async {
                           FocusScope.of(context).unfocus();
-                          if (_searchByCity) {
-                            await locationProvider.addLocationByCity(_searchController.text);
-                            goToDetailsScreen(context, locationProvider.locations.last);
-                          } else {
-                            locationProvider.addLocationByZip(_searchController.text);
-                            goToDetailsScreen(context, locationProvider.locations.last);
-                          }
+                          searchByCityOrZip(
+                            searchByCity: _searchByCity,
+                            input: _searchController.text,
+                            addLocationByCity: locationProvider.addLocationByCity,
+                            addLocationByZip: locationProvider.addLocationByZip,
+                            locationList: locationProvider.locations,
+                          );
                         },
                         icon: const Icon(Icons.search, color: Colors.white)),
                     hintText: _searchByCity ? 'Search By City Name' : 'Search By Zip',
@@ -216,13 +211,13 @@ class _HomeForegroundState extends State<HomeForeground> {
                   ),
                   onSubmitted: (value) async {
                     FocusScope.of(context).unfocus();
-                    if (_searchByCity) {
-                      await locationProvider.addLocationByCity(_searchController.text);
-                      goToDetailsScreen(context, locationProvider.locations.last);
-                    } else {
-                      locationProvider.addLocationByZip(_searchController.text);
-                      goToDetailsScreen(context, locationProvider.locations.last);
-                    }
+                    searchByCityOrZip(
+                      searchByCity: _searchByCity,
+                      input: _searchController.text,
+                      addLocationByCity: locationProvider.addLocationByCity,
+                      addLocationByZip: locationProvider.addLocationByZip,
+                      locationList: locationProvider.locations,
+                    );
                   },
                 ),
                 const SizedBox(height: 90),
@@ -279,6 +274,36 @@ class _HomeForegroundState extends State<HomeForeground> {
         ),
       ),
     );
+  }
+
+  // Take in a bool to check to see if either addLocationByCity or addLocationByZip should be called
+  // Pass in the two methods.
+  // Future<String> since that's the return type, (String searchInput) since that's the argument needed for the method called
+  Future<void> searchByCityOrZip(
+      {bool searchByCity,
+      String input,
+      List<LocationModel> locationList,
+      Future<String> Function(String searchInput) addLocationByCity,
+      Future<String> Function(String searchInput) addLocationByZip}) async {
+    if (searchByCity) {
+      final returnValue = await addLocationByCity(input);
+      if (returnValue == 'Success') {
+        goToDetailsScreen(context, locationList.last);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(returnValue),
+        ));
+      }
+    } else {
+      final returnValue = await addLocationByZip(input);
+      if (returnValue == 'Success') {
+        goToDetailsScreen(context, locationList.last);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(returnValue),
+        ));
+      }
+    }
   }
 }
 
