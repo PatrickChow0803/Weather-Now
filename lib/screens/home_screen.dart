@@ -105,7 +105,7 @@ class _HomeForegroundState extends State<HomeForeground> {
   @override
   Widget build(BuildContext context) {
     print(' This was called in build widget');
-    final locationProvider = Provider.of<LocationProvider>(context);
+    final locationProvider = Provider.of<LocationProvider>(context, listen: false);
 
     // used to give color and shape to the Text Field
     const outlineInputBorder = OutlineInputBorder(
@@ -199,9 +199,8 @@ class _HomeForegroundState extends State<HomeForeground> {
                         onPressed: () async {
                           FocusScope.of(context).unfocus();
                           if (_searchByCity) {
-                            final LocationModel _cityLocation =
-                                await widget._weather.getWeatherByCity(_searchController.text);
-                            goToDetailsScreen(context, _cityLocation);
+                            await locationProvider.addLocationByCity(_searchController.text);
+                            goToDetailsScreen(context, locationProvider.locations.last);
                           } else {
                             final LocationModel _cityLocation =
                                 await widget._weather.getWeatherByZipCode(_searchController.text);
@@ -219,9 +218,8 @@ class _HomeForegroundState extends State<HomeForeground> {
                   onSubmitted: (value) async {
                     FocusScope.of(context).unfocus();
                     if (_searchByCity) {
-                      final LocationModel _cityLocation =
-                          await widget._weather.getWeatherByCity(_searchController.text);
-                      goToDetailsScreen(context, _cityLocation);
+                      await locationProvider.addLocationByCity(_searchController.text);
+                      goToDetailsScreen(context, locationProvider.locations.last);
                     } else {
                       final LocationModel _cityLocation =
                           await widget._weather.getWeatherByZipCode(_searchController.text);

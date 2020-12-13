@@ -69,7 +69,7 @@ class WeatherCard extends StatelessWidget {
                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     // COULD ADD 'hh:mm:ss' into DateFormat's constructor
                     // COULD HAVE JUST ADDED .add_jm() instead of doing 'hh:mm:ss a'
-                    return Text(DateFormat('hh:mm:ss a').format(DateTime.fromMillisecondsSinceEpoch(
+                    return Text(DateFormat('hh:mm: a').format(DateTime.fromMillisecondsSinceEpoch(
                         current.millisecondsSinceEpoch + location.timezone)));
                   },
                 ),
