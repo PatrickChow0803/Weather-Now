@@ -10,6 +10,7 @@ import 'package:weather_app/services/auth.dart';
 import 'package:weather_app/services/geo_location.dart';
 import 'package:weather_app/services/weather.dart';
 import 'package:weather_app/widgets/weather_card.dart';
+import 'package:weather_icons/weather_icons.dart';
 
 import '../models/location.dart';
 import '../utility.dart';
@@ -110,6 +111,7 @@ class _HomeForegroundState extends State<HomeForeground> {
   @override
   Widget build(BuildContext context) {
     print(' This was called in build widget');
+    final _locationProvider = Provider.of<LocationProvider>(context, listen: false);
     final _authProvider = Provider.of<AuthProvider>(context, listen: false);
     bool _isAnonymous = _authProvider.auth.currentUser.isAnonymous;
     String _username = _authProvider.auth.currentUser.displayName;
@@ -130,18 +132,65 @@ class _HomeForegroundState extends State<HomeForeground> {
 
     return Scaffold(
       backgroundColor: Colors.black54,
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.black12,
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                ),
+                child: Center(
+                    child: Column(
+                  children: [
+                    const Icon(
+                      WeatherIcons.day_sunny,
+                      size: 48,
+                      color: Colors.yellowAccent,
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Weather Now',
+                      style: TextStyle(fontSize: 30, color: Colors.white70),
+                    )
+                  ],
+                )),
+              ),
+              ListTile(
+                title: const Text('Settings'),
+                trailing: const Icon(Icons.settings),
+                onTap: () {
+                  // Update the state of the app.
+                  // ...
+                },
+              ),
+              ListTile(
+                title: const Text('Log Out'),
+                trailing: const Icon(Icons.logout),
+                onTap: () async {
+                  // Update the state of the app.
+                  // ...
+                  await _authProvider.signOut();
+                  await _authProvider.signOut();
+                  _locationProvider.removeAllLocations();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.white),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () async {
-            // await locationProvider.addLocationByCoordinates(
-            //     longitude: widget._location.longitude, latitude: widget._location.latitude);
-            // print(authProvider.auth.currentUser.isAnonymous);
-          },
-        ),
         actions: [
           if (!_isAnonymous)
             IconButton(

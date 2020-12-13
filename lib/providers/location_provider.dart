@@ -78,6 +78,11 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
+  void removeAllLocations() {
+    _locations.clear();
+    notifyListeners();
+  }
+
   void removeLocation(String cityName) {
     _locations.removeWhere((location) => location.name == cityName);
     notifyListeners();
