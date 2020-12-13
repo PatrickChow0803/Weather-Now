@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_app/providers/location_provider.dart';
+import 'package:weather_app/services/auth.dart';
 import 'package:weather_app/services/geo_location.dart';
 import 'package:weather_app/services/weather.dart';
 import 'package:weather_app/widgets/weather_card.dart';
@@ -109,7 +110,9 @@ class _HomeForegroundState extends State<HomeForeground> {
   @override
   Widget build(BuildContext context) {
     print(' This was called in build widget');
-    final locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    final _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    bool _isAnonymous = _authProvider.auth.currentUser.isAnonymous;
+    String _username = _authProvider.auth.currentUser.displayName;
 
     // used to give color and shape to the Text Field
     const outlineInputBorder = OutlineInputBorder(
@@ -134,22 +137,22 @@ class _HomeForegroundState extends State<HomeForeground> {
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () async {
-            await locationProvider.addLocationByCoordinates(
-                longitude: widget._location.longitude, latitude: widget._location.latitude);
+            // await locationProvider.addLocationByCoordinates(
+            //     longitude: widget._location.longitude, latitude: widget._location.latitude);
+            // print(authProvider.auth.currentUser.isAnonymous);
           },
         ),
         actions: [
-          IconButton(
-            icon: const CircleAvatar(
-              radius: 15,
-              backgroundImage: NetworkImage(
-                'https://lh3.googleusercontent.com/a-/AOh14GhLpl-fIkDipAjfHrC7zcifmUuxmu1T1U9zO2Hdeg=s88-c-k-c0x00ffffff-no-rj-mo',
+          if (!_isAnonymous)
+            IconButton(
+              icon: CircleAvatar(
+                radius: 15,
+                backgroundImage: CachedNetworkImageProvider(
+                  _authProvider.auth.currentUser.photoURL,
+                ),
               ),
-            ),
-            onPressed: () {
-              print('called');
-            },
-          )
+              onPressed: () {},
+            )
         ],
       ),
       // prevents overflow from soft keyboard
@@ -163,13 +166,14 @@ class _HomeForegroundState extends State<HomeForeground> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 50),
-                const Text(
-                  'Hello Patrick',
-                  style: TextStyle(fontSize: 30),
-                ),
+                if (!_isAnonymous)
+                  Text(
+                    'Hello $_username',
+                    style: const TextStyle(fontSize: 30),
+                  ),
                 const SizedBox(height: 5),
                 const Text(
-                  'Check the weather by the city',
+                  'Check the weather by either the city or zip',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,

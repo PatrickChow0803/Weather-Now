@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:weather_app/models/location.dart';
+import 'package:weather_app/services/auth.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../utility.dart';
@@ -49,6 +51,9 @@ class DetailForeground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final bool _isAnonymous = _authProvider.auth.currentUser.isAnonymous;
+
     // These are used for getting the proper time and updating it.
     DateTime current = DateTime.now();
 
@@ -69,15 +74,16 @@ class DetailForeground extends StatelessWidget {
           },
         ),
         actions: [
-          IconButton(
-            icon: const CircleAvatar(
-              radius: 15,
-              backgroundImage: NetworkImage(
-                'https://lh3.googleusercontent.com/a-/AOh14GhLpl-fIkDipAjfHrC7zcifmUuxmu1T1U9zO2Hdeg=s88-c-k-c0x00ffffff-no-rj-mo',
+          if (!_isAnonymous)
+            IconButton(
+              icon: CircleAvatar(
+                radius: 15,
+                backgroundImage: CachedNetworkImageProvider(
+                  _authProvider.auth.currentUser.photoURL,
+                ),
               ),
-            ),
-            onPressed: () {},
-          )
+              onPressed: () {},
+            )
         ],
       ),
       body: Padding(
