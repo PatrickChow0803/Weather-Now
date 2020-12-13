@@ -2,23 +2,27 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
-import 'package:transparent_image/transparent_image.dart';
+import 'package:provider/provider.dart';
 import 'package:weather_app/models/location.dart';
+import 'package:weather_app/providers/location_provider.dart';
 import 'package:weather_app/screens/details_screen.dart';
 import 'package:weather_icons/weather_icons.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../utility.dart';
 
 class WeatherCard extends StatelessWidget {
+  final LocationModel location;
+
   const WeatherCard({
     Key key,
-    @required this.location,
+    this.location,
   }) : super(key: key);
-
-  final LocationModel location;
 
   @override
   Widget build(BuildContext context) {
+    final locationProvider = Provider.of<LocationProvider>(context);
+
     // These are used for getting the proper time and updating it.
     DateTime current = DateTime.now();
     final Stream timer = Stream.periodic(
@@ -30,6 +34,36 @@ class WeatherCard extends StatelessWidget {
             builder: (_) => DetailsScreen(
                   location: location,
                 )));
+      },
+      onLongPress: () {
+        Alert(
+          style: const AlertStyle(backgroundColor: Colors.blueGrey),
+          context: context,
+          type: AlertType.warning,
+          title: "Do you want to remove this location from your liked locations?",
+          // desc: "Flutter is more awesome with RFlutter Alert.",
+          buttons: [
+            DialogButton(
+              onPressed: () {
+                locationProvider.removeLocation(location.name);
+                Navigator.pop(context);
+              },
+              color: Colors.lightGreen[100],
+              child: const Text(
+                "Cancel",
+                style: TextStyle(color: Colors.black, fontSize: 20),
+              ),
+            ),
+            DialogButton(
+              onPressed: () => Navigator.pop(context),
+              color: Colors.redAccent[200],
+              child: const Text(
+                "Remove",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ],
+        ).show();
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
@@ -51,6 +85,7 @@ class WeatherCard extends StatelessWidget {
             ),
             Column(
               children: [
+                const SizedBox(height: 20),
                 InkWell(
                   onTap: () {},
                   child: Text(
@@ -67,7 +102,7 @@ class WeatherCard extends StatelessWidget {
                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     // COULD ADD 'hh:mm:ss' into DateFormat's constructor
                     // COULD HAVE JUST ADDED .add_jm() instead of doing 'hh:mm:ss a'
-                    return Text(DateFormat('hh:mm:ss a').format(DateTime.fromMillisecondsSinceEpoch(
+                    return Text(DateFormat('hh:mm: a').format(DateTime.fromMillisecondsSinceEpoch(
                         current.millisecondsSinceEpoch + location.timezone)));
                   },
                 ),

@@ -14,7 +14,7 @@ class Weather {
       final response = await http.get(
           'https://api.openweathermap.org/data/2.5/weather?q=$city&units=imperial&appid=$_apiKey');
       print(response.body);
-      final decodedJson = jsonDecode(response.body);
+      final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
       return LocationModel.fromJson(decodedJson);
     } on HttpException catch (e) {
       // do ...
@@ -31,7 +31,7 @@ class Weather {
       final response = await http.get(
           'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=imperial&appid=$_apiKey');
       print(response.body);
-      final decodedJson = jsonDecode(response.body);
+      final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
 
       return LocationModel.fromJson(decodedJson);
     } catch (e) {
@@ -47,7 +47,7 @@ class Weather {
           'https://api.openweathermap.org/data/2.5/weather?zip=$zipCode&units=imperial&appid=$_apiKey');
 
       print(response.body);
-      final decodedJson = jsonDecode(response.body);
+      final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
       return LocationModel.fromJson(decodedJson);
     } catch (e) {
       print('getWeatherByZipCode Error: $e');

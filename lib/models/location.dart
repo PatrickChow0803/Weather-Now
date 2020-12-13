@@ -29,22 +29,22 @@ class LocationModel {
   });
 
   // factory is used to instantiate an instance of the class
-  factory LocationModel.fromJson(dynamic json) {
+  factory LocationModel.fromJson(Map<String, dynamic> jsonMap) {
     // Use this in postman for reference
     // https://api.openweathermap.org/data/2.5/weather?zip=11229,us&appid=
     return LocationModel(
-      name: json['name'] as String,
+      name: jsonMap['name'] as String,
       // getting the current time from the API doesn't work since the value isn't updated every second.
       // therefore the actual time to display is calculated by getting the DateTime.now().millisecondsSinceEpoch + timezone
-      timezone: json['timezone'] as int,
-      temperature: json['main']['temp'] as dynamic,
-      weather: json['weather'][0]['main'] as String,
-      feelsLike: json['main']['feels_like'] as dynamic,
+      timezone: jsonMap['timezone'] as int,
+      temperature: jsonMap['main']['temp'] as dynamic,
+      weather: jsonMap['weather'][0]['main'] as String,
+      feelsLike: jsonMap['main']['feels_like'] as dynamic,
       // for some reason tempMin is sometimes an Int or Double
-      tempMin: json['main']['temp_min'] as dynamic,
-      tempMax: json['main']['temp_max'] as dynamic,
-      humidity: json['main']['temp_max'] as dynamic,
-      wind: json['wind']['speed'] as double,
+      tempMin: jsonMap['main']['temp_min'] as dynamic,
+      tempMax: jsonMap['main']['temp_max'] as dynamic,
+      humidity: jsonMap['main']['temp_max'] as dynamic,
+      wind: jsonMap['wind']['speed'] as double,
       imageUrl: 'https://i.ibb.co/df35Y8Q/2.png',
     );
   }
