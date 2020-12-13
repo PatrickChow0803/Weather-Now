@@ -26,7 +26,7 @@ class LocationProvider with ChangeNotifier {
     return [..._locations];
   }
 
-  Future<String> addLocationByCity(String city, String userId) async {
+  Future<String> addLocationByCity(String city) async {
     try {
       // https://api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
       final response = await http.get(
@@ -35,11 +35,6 @@ class LocationProvider with ChangeNotifier {
       final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
       _locations.insert(1, LocationModel.fromJson(decodedJson));
       notifyListeners();
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .collection('locations')
-          .add({'savedLocations': _locations[0].name});
       return 'Success';
     } on http.ClientException catch (e) {
       // do ...
@@ -82,6 +77,17 @@ class LocationProvider with ChangeNotifier {
       // print('getWeatherByZipCode Error: $e');
       return "Couldn't find Zip";
     }
+  }
+
+  void addLocationToSaved(LocationModel location, String userId) {
+    _locations.insert(1, location);
+    notifyListeners();
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('locations')
+        .add({'savedLocations': location.name, 'timeAdded': DateTime.now().millisecondsSinceEpoch});
   }
 
   void removeAllLocations() {

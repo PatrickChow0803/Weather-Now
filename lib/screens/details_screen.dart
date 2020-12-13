@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_app/models/location.dart';
+import 'package:weather_app/providers/location_provider.dart';
 import 'package:weather_app/services/auth.dart';
 import 'package:weather_icons/weather_icons.dart';
 
@@ -51,6 +52,7 @@ class DetailForeground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _locationProvider = Provider.of<LocationProvider>(context, listen: false);
     final _authProvider = Provider.of<AuthProvider>(context, listen: false);
     final bool _isAnonymous = _authProvider.auth.currentUser.isAnonymous;
 
@@ -115,6 +117,8 @@ class DetailForeground extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 20.0),
                   child: OutlinedButton(
                     onPressed: () {
+                      _locationProvider.addLocationToSaved(
+                          location, _authProvider.auth.currentUser.uid);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('Location has been added to Saved Locations'),
                       ));

@@ -336,8 +336,7 @@ class _HomeForegroundState extends State<HomeForeground> {
     final locationProvider = Provider.of<LocationProvider>(context, listen: false);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     if (searchByCity) {
-      final returnValue =
-          await locationProvider.addLocationByCity(input, authProvider.auth.currentUser.uid);
+      final returnValue = await locationProvider.addLocationByCity(input);
       if (returnValue == 'Success') {
         goToDetailsScreen(context, locationProvider.locations[1]);
       } else {
