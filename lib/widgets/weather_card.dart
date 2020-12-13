@@ -7,6 +7,7 @@ import 'package:weather_app/models/location.dart';
 import 'package:weather_app/providers/location_provider.dart';
 import 'package:weather_app/screens/details_screen.dart';
 import 'package:weather_icons/weather_icons.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../utility.dart';
 
@@ -35,7 +36,34 @@ class WeatherCard extends StatelessWidget {
                 )));
       },
       onLongPress: () {
-        locationProvider.removeLocation(location.name);
+        Alert(
+          style: const AlertStyle(backgroundColor: Colors.blueGrey),
+          context: context,
+          type: AlertType.warning,
+          title: "Do you want to remove this location from your liked locations?",
+          // desc: "Flutter is more awesome with RFlutter Alert.",
+          buttons: [
+            DialogButton(
+              onPressed: () {
+                locationProvider.removeLocation(location.name);
+                Navigator.pop(context);
+              },
+              color: Colors.lightGreen[100],
+              child: const Text(
+                "Cancel",
+                style: TextStyle(color: Colors.black, fontSize: 20),
+              ),
+            ),
+            DialogButton(
+              onPressed: () => Navigator.pop(context),
+              color: Colors.redAccent[200],
+              child: const Text(
+                "Remove",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            )
+          ],
+        ).show();
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),

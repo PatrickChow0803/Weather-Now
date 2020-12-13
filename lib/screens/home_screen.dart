@@ -197,6 +197,7 @@ class _HomeForegroundState extends State<HomeForeground> {
                             searchByCity: _searchByCity,
                             input: _searchController.text,
                           );
+                          _searchController.clear();
                         },
                         icon: const Icon(Icons.search, color: Colors.white)),
                     hintText: _searchByCity ? 'Search By City Name' : 'Search By Zip',
@@ -212,6 +213,7 @@ class _HomeForegroundState extends State<HomeForeground> {
                       searchByCity: _searchByCity,
                       input: _searchController.text,
                     );
+                    _searchController.clear();
                   },
                 ),
                 const SizedBox(height: 90),
