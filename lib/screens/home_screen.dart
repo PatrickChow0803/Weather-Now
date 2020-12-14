@@ -30,8 +30,22 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _loadingApp = false;
 
   @override
+  void deactivate() {
+    // TODO: implement deactivate
+    super.deactivate();
+    print('Deactivate Called');
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _locationProvider.removeAllLocations();
+      _locationProvider.removeAllSavedLocations();
+      print(_locationProvider.locations);
+    });
+  }
+
+  @override
   void initState() {
     super.initState();
+
+    print('initState Called');
 
     // Need this if you're going to be using the Provider in initstate
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -42,11 +56,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // _loadingApp = !_loadingApp;
 
+    final uid = FirebaseAuth.instance.currentUser.uid;
+
     // After getting the coordinates, use them to get the weather
     _location.getCurrentLocation().then((value) => _locationProvider
             .searchLocationByCoordinates(
                 latitude: _location.latitude, longitude: _location.longitude)
             .then((value) {
+          _locationProvider.getListOfSavedLocations(uid).then((value) {
+            for (final String locationName in _locationProvider.savedLocations) {
+              _locationProvider.searchLocationByCity(locationName);
+              _locationProvider.addSearchedLocationToLocationList();
+            }
+          });
+        }).then((value) {
           // changeLoading();
         }));
   }
@@ -114,7 +137,6 @@ class _HomeForegroundState extends State<HomeForeground> {
     print(' This was called in build widget');
     final _locationProvider = Provider.of<LocationProvider>(context, listen: false);
     final _authProvider = Provider.of<AuthProvider>(context, listen: false);
-    bool _isAnonymous = _authProvider.auth.currentUser.isAnonymous;
     String _username = _authProvider.auth.currentUser.displayName;
 
     // used to give color and shape to the Text Field
@@ -180,7 +202,6 @@ class _HomeForegroundState extends State<HomeForeground> {
                   // Update the state of the app.
                   // ...
                   _locationProvider.removeAllLocations();
-                  await _authProvider.signOut();
                   await _authProvider.signOut();
                 },
               ),
@@ -285,14 +306,14 @@ class _HomeForegroundState extends State<HomeForeground> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    OutlinedButton(
-                      onPressed: () {},
-                      style: OutlinedButton.styleFrom(
-                          primary: Colors.white,
-                          side: const BorderSide(color: Colors.white),
-                          shape: const CircleBorder()),
-                      child: const Icon(Icons.more_horiz),
-                    ),
+                    // OutlinedButton(
+                    //   onPressed: () {},
+                    //   style: OutlinedButton.styleFrom(
+                    //       primary: Colors.white,
+                    //       side: const BorderSide(color: Colors.white),
+                    //       shape: const CircleBorder()),
+                    //   child: const Icon(Icons.more_horiz),
+                    // ),
                   ],
                 ),
                 const SizedBox(height: 10),

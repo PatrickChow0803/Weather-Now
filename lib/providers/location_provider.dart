@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 class LocationProvider with ChangeNotifier {
   final String _apiKey = DotEnv().env['WEATHER_API'];
   LocationModel _searchedLocation;
+  final List<String> _savedLocations = [];
   final List<LocationModel> _locations = [
     // LocationModel(
     // name: 'Test',
@@ -22,6 +23,8 @@ class LocationProvider with ChangeNotifier {
     // timezone: 0,
     // wind: 5),
   ];
+
+  List<String> get savedLocations => _savedLocations;
 
   LocationModel get searchedLocation => _searchedLocation;
 
@@ -38,12 +41,14 @@ class LocationProvider with ChangeNotifier {
       // print(response.body);
       final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
       _searchedLocation = LocationModel.fromJson(decodedJson);
+      notifyListeners();
       return 'Success';
     } on http.ClientException catch (e) {
       // do ...
       return 'Invalid City';
     } catch (e) {
       // return 'City Not Found';
+      print(e);
       return "Couldn't find City";
     }
   }
@@ -82,6 +87,12 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
+  void addSearchedLocationToLocationList() {
+    print('addSearchedLocationToLocationList');
+    _locations.insert(1, _searchedLocation);
+    notifyListeners();
+  }
+
   Future<void> addLocationToSaved(LocationModel location, String userId) async {
     try {
       if (_locations.contains(location)) {
@@ -105,6 +116,24 @@ class LocationProvider with ChangeNotifier {
   void removeAllLocations() {
     _locations.clear();
     notifyListeners();
+  }
+
+  void removeAllSavedLocations() {
+    _savedLocations.clear();
+    notifyListeners();
+  }
+
+  Future<void> getListOfSavedLocations(String userId) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('locations')
+        .get()
+        .then((value) {
+      for (DocumentSnapshot ds in value.docs) {
+        _savedLocations.add(ds.get('savedLocation') as String);
+      }
+    });
   }
 
   Future<void> removeLocation(String cityName, String userId) async {

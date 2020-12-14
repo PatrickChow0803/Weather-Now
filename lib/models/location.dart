@@ -13,7 +13,7 @@ class LocationModel {
   final dynamic tempMin;
   final dynamic tempMax;
   final dynamic humidity;
-  final double wind;
+  final dynamic wind;
 
   LocationModel({
     this.name,
@@ -44,7 +44,7 @@ class LocationModel {
       tempMin: jsonMap['main']['temp_min'] as dynamic,
       tempMax: jsonMap['main']['temp_max'] as dynamic,
       humidity: jsonMap['main']['temp_max'] as dynamic,
-      wind: jsonMap['wind']['speed'] as double,
+      wind: jsonMap['wind']['speed'] as dynamic,
       imageUrl: 'https://i.ibb.co/df35Y8Q/2.png',
     );
   }
