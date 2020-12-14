@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:weather_app/models/location.dart';
 import 'package:weather_app/providers/location_provider.dart';
 import 'package:weather_app/screens/details_screen.dart';
+import 'package:weather_app/services/auth.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -21,7 +22,8 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locationProvider = Provider.of<LocationProvider>(context);
+    final _locationProvider = Provider.of<LocationProvider>(context, listen: true);
+    final _authProvider = Provider.of<AuthProvider>(context);
 
     // These are used for getting the proper time and updating it.
     DateTime current = DateTime.now();
@@ -45,7 +47,6 @@ class WeatherCard extends StatelessWidget {
           buttons: [
             DialogButton(
               onPressed: () {
-                locationProvider.removeLocation(location.name);
                 Navigator.pop(context);
               },
               color: Colors.lightGreen[100],
@@ -55,7 +56,18 @@ class WeatherCard extends StatelessWidget {
               ),
             ),
             DialogButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                if (_locationProvider.locations[0] == location) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Your home location can\'t be removed"),
+                  ));
+                  Navigator.pop(context);
+                  return;
+                }
+                print('This working?');
+                _locationProvider.removeLocation(location.name, _authProvider.auth.currentUser.uid);
+                Navigator.pop(context);
+              },
               color: Colors.redAccent[200],
               child: const Text(
                 "Remove",
@@ -103,7 +115,8 @@ class WeatherCard extends StatelessWidget {
                     // COULD ADD 'hh:mm:ss' into DateFormat's constructor
                     // COULD HAVE JUST ADDED .add_jm() instead of doing 'hh:mm:ss a'
                     return Text(DateFormat('hh:mm: a').format(DateTime.fromMillisecondsSinceEpoch(
-                        current.millisecondsSinceEpoch + location.timezone)));
+                        current.millisecondsSinceEpoch +
+                            getSecondDifference(location.timezone) * 1000)));
                   },
                 ),
                 const SizedBox(height: 40),
@@ -133,6 +146,20 @@ class WeatherCard extends StatelessWidget {
     DateTime currentTime = DateTime.now();
     NTP.getNtpOffset().then((value) => currentTime.add(Duration(milliseconds: value)));
     return currentTime;
+  }
+
+  int getSecondDifference(int otherSeconds) {
+    final now = DateTime.now();
+    // use timeZoneOffset to see the number of hour difference from utc
+    final timeZoneOffset = now.timeZoneOffset;
+    // because the value of timeZoneOffSet is "-5:00"...
+    // use subString to only get the hours
+    final String totalHourIs = timeZoneOffset.toString().substring(1, 2);
+    // Convert the String hours to int and multiply it by 3600, which is the number of seconds in an hour
+    // Then add onto the seconds from timezone that the API gives
+    // print('Difference in Seconds is: ${(int.parse(totalHourIs) * 3600) + otherSeconds}');
+
+    return (int.parse(totalHourIs) * 3600) + otherSeconds;
   }
 
   // https://openweathermap.org/weather-conditions

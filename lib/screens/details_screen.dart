@@ -1,8 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:weather_app/models/location.dart';
+import 'package:weather_app/providers/location_provider.dart';
+import 'package:weather_app/services/auth.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../utility.dart';
@@ -49,6 +53,10 @@ class DetailForeground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    final _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final bool _isAnonymous = _authProvider.auth.currentUser.isAnonymous;
+
     // These are used for getting the proper time and updating it.
     DateTime current = DateTime.now();
 
@@ -69,25 +77,72 @@ class DetailForeground extends StatelessWidget {
           },
         ),
         actions: [
-          IconButton(
-            icon: const CircleAvatar(
-              radius: 15,
-              backgroundImage: NetworkImage(
-                'https://lh3.googleusercontent.com/a-/AOh14GhLpl-fIkDipAjfHrC7zcifmUuxmu1T1U9zO2Hdeg=s88-c-k-c0x00ffffff-no-rj-mo',
+          if (_authProvider.auth.currentUser.photoURL != null)
+            IconButton(
+              icon: CircleAvatar(
+                radius: 15,
+                backgroundImage: CachedNetworkImageProvider(
+                  _authProvider.auth.currentUser.photoURL,
+                ),
               ),
-            ),
-            onPressed: () {},
-          )
+              onPressed: () {},
+            )
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 18),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              getIcon(location.weather),
-              color: Colors.white,
-              size: 80,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // This is purely used to space out the widgets in the row
+                Opacity(
+                  opacity: 0,
+                  child: OutlinedButton(
+                    onPressed: () {},
+                    style: OutlinedButton.styleFrom(
+                        primary: Colors.white,
+                        side: const BorderSide(color: Colors.white),
+                        shape: const CircleBorder()),
+                    child: const Icon(Icons.more_horiz),
+                  ),
+                ),
+                Icon(
+                  getIcon(location.weather),
+                  color: Colors.white,
+                  size: 80,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: OutlinedButton(
+                    onPressed: () {
+                      String message = '';
+                      if (!_locationProvider.locations.contains(location)) {
+                        _locationProvider.addLocationToSaved(
+                            location, _authProvider.auth.currentUser.uid);
+                        if (FirebaseAuth.instance.currentUser.isAnonymous) {
+                          message =
+                              '*Waring: Anonymous Users can save locations but they will be lost on sign out';
+                        }
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Location has been added to Saved Locations \n $message'),
+                        ));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('This location is already saved to your list'),
+                        ));
+                      }
+                    },
+                    style: OutlinedButton.styleFrom(
+                        primary: Colors.white,
+                        side: const BorderSide(color: Colors.white),
+                        shape: const CircleBorder()),
+                    child: const Icon(Icons.add),
+                  ),
+                ),
+              ],
             ),
             DefaultTextStyle(
               style: GoogleFonts.raleway(),
@@ -183,7 +238,7 @@ class DetailForeground extends StatelessWidget {
     final String totalHourIs = timeZoneOffset.toString().substring(1, 2);
     // Convert the String hours to int and multiply it by 3600, which is the number of seconds in an hour
     // Then add onto the seconds from timezone that the API gives
-    print('Difference in Seconds is: ${(int.parse(totalHourIs) * 3600) + otherSeconds}');
+    // print('Difference in Seconds is: ${(int.parse(totalHourIs) * 3600) + otherSeconds}');
 
     return (int.parse(totalHourIs) * 3600) + otherSeconds;
   }

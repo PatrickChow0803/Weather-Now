@@ -1,18 +1,24 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_app/providers/location_provider.dart';
+import 'package:weather_app/services/auth.dart';
 import 'package:weather_app/services/geo_location.dart';
 import 'package:weather_app/services/weather.dart';
 import 'package:weather_app/widgets/weather_card.dart';
+import 'package:weather_icons/weather_icons.dart';
 
 import '../models/location.dart';
 import '../utility.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key}) : super(key: key);
+  const MyHomePage({
+    Key key,
+  }) : super(key: key);
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -34,21 +40,22 @@ class _MyHomePageState extends State<MyHomePage> {
       // _locationProvider = Provider.of<LocationProvider>(context, listen: false);
     });
 
-    _loadingApp = !_loadingApp;
+    // _loadingApp = !_loadingApp;
 
     // After getting the coordinates, use them to get the weather
     _location.getCurrentLocation().then((value) => _locationProvider
-            .addLocationByCoordinates(latitude: _location.latitude, longitude: _location.longitude)
+            .searchLocationByCoordinates(
+                latitude: _location.latitude, longitude: _location.longitude)
             .then((value) {
-          changeLoading();
+          // changeLoading();
         }));
   }
 
-  void changeLoading() {
-    setState(() {
-      _loadingApp = !_loadingApp;
-    });
-  }
+  // void changeLoading() {
+  //   setState(() {
+  //     _loadingApp = !_loadingApp;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +112,10 @@ class _HomeForegroundState extends State<HomeForeground> {
   @override
   Widget build(BuildContext context) {
     print(' This was called in build widget');
-    final locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    final _locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    final _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    bool _isAnonymous = _authProvider.auth.currentUser.isAnonymous;
+    String _username = _authProvider.auth.currentUser.displayName;
 
     // used to give color and shape to the Text Field
     const outlineInputBorder = OutlineInputBorder(
@@ -123,29 +133,76 @@ class _HomeForegroundState extends State<HomeForeground> {
 
     return Scaffold(
       backgroundColor: Colors.black54,
+      drawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.black12,
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                ),
+                child: Center(
+                    child: Column(
+                  children: [
+                    const Icon(
+                      WeatherIcons.day_sunny,
+                      size: 48,
+                      color: Colors.yellowAccent,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Weather Now',
+                      style: GoogleFonts.raleway(fontSize: 30, color: Colors.white70),
+                    ),
+                  ],
+                )),
+              ),
+              // ListTile(
+              //   title: const Text('Settings'),
+              //   trailing: const Icon(Icons.settings),
+              //   onTap: () {
+              //     // Update the state of the app.
+              //     // ...
+              //   },
+              // ),
+              ListTile(
+                title: const Text('Log Out'),
+                trailing: const Icon(Icons.logout),
+                onTap: () async {
+                  // Update the state of the app.
+                  // ...
+                  _locationProvider.removeAllLocations();
+                  await _authProvider.signOut();
+                  await _authProvider.signOut();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
         iconTheme: const IconThemeData(color: Colors.white),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () async {
-            await locationProvider.addLocationByCoordinates(
-                longitude: widget._location.longitude, latitude: widget._location.latitude);
-          },
-        ),
         actions: [
-          IconButton(
-            icon: const CircleAvatar(
-              radius: 15,
-              backgroundImage: NetworkImage(
-                'https://lh3.googleusercontent.com/a-/AOh14GhLpl-fIkDipAjfHrC7zcifmUuxmu1T1U9zO2Hdeg=s88-c-k-c0x00ffffff-no-rj-mo',
+          if (_authProvider.auth.currentUser.photoURL != null)
+            IconButton(
+              icon: CircleAvatar(
+                radius: 15,
+                backgroundImage: CachedNetworkImageProvider(
+                  _authProvider.auth.currentUser.photoURL,
+                ),
               ),
-            ),
-            onPressed: () {
-              print('called');
-            },
-          )
+              onPressed: () {},
+            )
         ],
       ),
       // prevents overflow from soft keyboard
@@ -159,13 +216,14 @@ class _HomeForegroundState extends State<HomeForeground> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 50),
-                const Text(
-                  'Hello Patrick',
-                  style: TextStyle(fontSize: 30),
-                ),
+                if (!(_authProvider.auth.currentUser.displayName == null))
+                  Text(
+                    'Hello $_username',
+                    style: const TextStyle(fontSize: 30),
+                  ),
                 const SizedBox(height: 5),
                 const Text(
-                  'Check the weather by the city',
+                  'Check the weather by either the city or zip',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -278,18 +336,18 @@ class _HomeForegroundState extends State<HomeForeground> {
   Future<void> searchByCityOrZip({bool searchByCity, String input}) async {
     final locationProvider = Provider.of<LocationProvider>(context, listen: false);
     if (searchByCity) {
-      final returnValue = await locationProvider.addLocationByCity(input);
+      final returnValue = await locationProvider.searchLocationByCity(input);
       if (returnValue == 'Success') {
-        goToDetailsScreen(context, locationProvider.locations.last);
+        goToDetailsScreen(context, locationProvider.searchedLocation);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(returnValue),
         ));
       }
     } else {
-      final returnValue = await locationProvider.addLocationByZip(input);
+      final returnValue = await locationProvider.searchLocationByZip(input);
       if (returnValue == 'Success') {
-        goToDetailsScreen(context, locationProvider.locations.last);
+        goToDetailsScreen(context, locationProvider.searchedLocation);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(returnValue),
