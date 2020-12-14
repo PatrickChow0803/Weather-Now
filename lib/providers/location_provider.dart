@@ -55,6 +55,7 @@ class LocationProvider with ChangeNotifier {
 
   Future<String> searchLocationByCoordinates({double latitude, double longitude}) async {
     try {
+      print("COORDINATES: $latitude $longitude");
       // https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
       final response = await http.get(
           'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=imperial&appid=$_apiKey');
