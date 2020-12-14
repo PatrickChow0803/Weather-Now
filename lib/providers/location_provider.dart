@@ -23,10 +23,9 @@ class LocationProvider with ChangeNotifier {
     // wind: 5),
   ];
 
-  LocationModel get searchedLocation {
-    return _searchedLocation;
-  }
+  LocationModel get searchedLocation => _searchedLocation;
 
+  // Only do this syntax when working with a list
   List<LocationModel> get locations {
     return [..._locations];
   }
@@ -54,11 +53,11 @@ class LocationProvider with ChangeNotifier {
       // https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
       final response = await http.get(
           'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&units=imperial&appid=$_apiKey');
-      print(response.body);
+      // print(response.body);
       final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
 
-      final locationTest = LocationModel.fromJson(decodedJson);
-      _locations.add(locationTest);
+      final coordinateLocation = LocationModel.fromJson(decodedJson);
+      _locations.add(coordinateLocation);
       notifyListeners();
       return 'Success';
     } catch (e) {
@@ -72,7 +71,7 @@ class LocationProvider with ChangeNotifier {
       // https://api.openweathermap.org/data/2.5/forecast?zip={zip code},{country code}&appid={API key}
       final response = await http.get(
           'https://api.openweathermap.org/data/2.5/weather?zip=$zipCode&units=imperial&appid=$_apiKey');
-      print(response.body);
+      // print(response.body);
       final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
       _locations.insert(1, LocationModel.fromJson(decodedJson));
       notifyListeners();

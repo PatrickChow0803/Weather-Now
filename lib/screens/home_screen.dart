@@ -165,23 +165,23 @@ class _HomeForegroundState extends State<HomeForeground> {
                   ],
                 )),
               ),
-              ListTile(
-                title: const Text('Settings'),
-                trailing: const Icon(Icons.settings),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
+              // ListTile(
+              //   title: const Text('Settings'),
+              //   trailing: const Icon(Icons.settings),
+              //   onTap: () {
+              //     // Update the state of the app.
+              //     // ...
+              //   },
+              // ),
               ListTile(
                 title: const Text('Log Out'),
                 trailing: const Icon(Icons.logout),
                 onTap: () async {
                   // Update the state of the app.
                   // ...
-                  await _authProvider.signOut();
-                  await _authProvider.signOut();
                   _locationProvider.removeAllLocations();
+                  await _authProvider.signOut();
+                  await _authProvider.signOut();
                 },
               ),
             ],

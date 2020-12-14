@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -117,11 +118,16 @@ class DetailForeground extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 20.0),
                   child: OutlinedButton(
                     onPressed: () {
-                      _locationProvider.addLocationToSaved(
-                          location, _authProvider.auth.currentUser.uid);
+                      String message = '';
                       if (!_locationProvider.locations.contains(location)) {
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('Location has been added to Saved Locations'),
+                        _locationProvider.addLocationToSaved(
+                            location, _authProvider.auth.currentUser.uid);
+                        if (FirebaseAuth.instance.currentUser.isAnonymous) {
+                          message =
+                              '*Waring: Anonymous Users can save locations but they will be lost on sign out';
+                        }
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Location has been added to Saved Locations \n $message'),
                         ));
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
