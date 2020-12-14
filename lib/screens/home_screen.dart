@@ -334,11 +334,10 @@ class _HomeForegroundState extends State<HomeForeground> {
   // Future<String> since that's the return type, (String searchInput) since that's the argument needed for the method called
   Future<void> searchByCityOrZip({bool searchByCity, String input}) async {
     final locationProvider = Provider.of<LocationProvider>(context, listen: false);
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     if (searchByCity) {
       final returnValue = await locationProvider.addLocationByCity(input);
       if (returnValue == 'Success') {
-        goToDetailsScreen(context, locationProvider.locations[1]);
+        goToDetailsScreen(context, locationProvider.searchedLocation);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(returnValue),
@@ -347,7 +346,7 @@ class _HomeForegroundState extends State<HomeForeground> {
     } else {
       final returnValue = await locationProvider.addLocationByZip(input);
       if (returnValue == 'Success') {
-        goToDetailsScreen(context, locationProvider.locations[1]);
+        goToDetailsScreen(context, locationProvider.searchedLocation);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(returnValue),

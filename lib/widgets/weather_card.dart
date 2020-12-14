@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:weather_app/models/location.dart';
 import 'package:weather_app/providers/location_provider.dart';
 import 'package:weather_app/screens/details_screen.dart';
+import 'package:weather_app/services/auth.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -21,7 +22,8 @@ class WeatherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locationProvider = Provider.of<LocationProvider>(context);
+    final _locationProvider = Provider.of<LocationProvider>(context, listen: true);
+    final _authProvider = Provider.of<AuthProvider>(context);
 
     // These are used for getting the proper time and updating it.
     DateTime current = DateTime.now();
@@ -55,14 +57,15 @@ class WeatherCard extends StatelessWidget {
             ),
             DialogButton(
               onPressed: () {
-                if (locationProvider.locations[0] == location) {
+                if (_locationProvider.locations[0] == location) {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text("Your home location can\'t be removed"),
                   ));
                   Navigator.pop(context);
                   return;
                 }
-                locationProvider.removeLocation(location.name);
+                print('This working?');
+                _locationProvider.removeLocation(location.name, _authProvider.auth.currentUser.uid);
                 Navigator.pop(context);
               },
               color: Colors.redAccent[200],

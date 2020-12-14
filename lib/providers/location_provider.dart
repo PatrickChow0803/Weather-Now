@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 class LocationProvider with ChangeNotifier {
   final String _apiKey = DotEnv().env['WEATHER_API'];
+  LocationModel _searchedLocation;
   final List<LocationModel> _locations = [
     // LocationModel(
     // name: 'Test',
@@ -22,6 +23,10 @@ class LocationProvider with ChangeNotifier {
     // wind: 5),
   ];
 
+  LocationModel get searchedLocation {
+    return _searchedLocation;
+  }
+
   List<LocationModel> get locations {
     return [..._locations];
   }
@@ -31,10 +36,9 @@ class LocationProvider with ChangeNotifier {
       // https://api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
       final response = await http.get(
           'https://api.openweathermap.org/data/2.5/weather?q=$city&units=imperial&appid=$_apiKey');
-      print(response.body);
+      // print(response.body);
       final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
-      _locations.insert(1, LocationModel.fromJson(decodedJson));
-      notifyListeners();
+      _searchedLocation = LocationModel.fromJson(decodedJson);
       return 'Success';
     } on http.ClientException catch (e) {
       // do ...
@@ -79,15 +83,18 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  void addLocationToSaved(LocationModel location, String userId) {
+  Future<void> addLocationToSaved(LocationModel location, String userId) async {
+    // Adds the location locally
     _locations.insert(1, location);
-    notifyListeners();
 
-    FirebaseFirestore.instance
+    // Adds the location to FireStore
+    await FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
         .collection('locations')
-        .add({'savedLocations': location.name, 'timeAdded': DateTime.now().millisecondsSinceEpoch});
+        .add({'savedLocation': location.name, 'timeAdded': DateTime.now().millisecondsSinceEpoch});
+
+    notifyListeners();
   }
 
   void removeAllLocations() {
@@ -95,8 +102,28 @@ class LocationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeLocation(String cityName) {
+  Future<void> removeLocation(String cityName, String userId) async {
+    // Removes the location locally
     _locations.removeWhere((location) => location.name == cityName);
+
+    // CollectionReference locationReference =
+    //     FirebaseFirestore.instance.collection('users').doc(userId).collection('locations');
+
+    // Removes the location from firestore
+    // Go to the locations collection, then query the collection, getting the QuerySnapshot.
+    // Loop though the QuerySnapshot
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('locations')
+        .where('savedLocation', isEqualTo: cityName)
+        .get()
+        .then((snapshot) => {
+              for (DocumentSnapshot ds in snapshot.docs)
+                {print(ds.reference), ds.reference.delete()}
+            });
+    print('Deleted successful');
+
     notifyListeners();
   }
 }
