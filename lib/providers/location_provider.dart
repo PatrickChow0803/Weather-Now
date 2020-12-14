@@ -31,7 +31,7 @@ class LocationProvider with ChangeNotifier {
     return [..._locations];
   }
 
-  Future<String> addLocationByCity(String city) async {
+  Future<String> searchLocationByCity(String city) async {
     try {
       // https://api.openweathermap.org/data/2.5/forecast?q={city name}&appid={API key}
       final response = await http.get(
@@ -49,7 +49,7 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  Future<String> addLocationByCoordinates({double latitude, double longitude}) async {
+  Future<String> searchLocationByCoordinates({double latitude, double longitude}) async {
     try {
       // https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}
       final response = await http.get(
@@ -67,7 +67,7 @@ class LocationProvider with ChangeNotifier {
     }
   }
 
-  Future<String> addLocationByZip(String zipCode) async {
+  Future<String> searchLocationByZip(String zipCode) async {
     try {
       // https://api.openweathermap.org/data/2.5/forecast?zip={zip code},{country code}&appid={API key}
       final response = await http.get(
@@ -84,17 +84,23 @@ class LocationProvider with ChangeNotifier {
   }
 
   Future<void> addLocationToSaved(LocationModel location, String userId) async {
-    // Adds the location locally
-    _locations.insert(1, location);
+    try {
+      if (_locations.contains(location)) {
+        return 'Location is already saved to your list';
+      }
+      // Adds the location locally
+      _locations.insert(1, location);
 
-    // Adds the location to FireStore
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .collection('locations')
-        .add({'savedLocation': location.name, 'timeAdded': DateTime.now().millisecondsSinceEpoch});
+      // Adds the location to FireStore
+      await FirebaseFirestore.instance.collection('users').doc(userId).collection('locations').add(
+          {'savedLocation': location.name, 'timeAdded': DateTime.now().millisecondsSinceEpoch});
 
-    notifyListeners();
+      notifyListeners();
+    } on FirebaseException catch (e) {
+      return 'FirebaseException: $e';
+    } catch (e) {
+      rethrow;
+    }
   }
 
   void removeAllLocations() {
@@ -103,27 +109,31 @@ class LocationProvider with ChangeNotifier {
   }
 
   Future<void> removeLocation(String cityName, String userId) async {
-    // Removes the location locally
-    _locations.removeWhere((location) => location.name == cityName);
+    try {
+      // Removes the location locally
+      _locations.removeWhere((location) => location.name == cityName);
 
-    // CollectionReference locationReference =
-    //     FirebaseFirestore.instance.collection('users').doc(userId).collection('locations');
+      // CollectionReference locationReference =
+      //     FirebaseFirestore.instance.collection('users').doc(userId).collection('locations');
 
-    // Removes the location from firestore
-    // Go to the locations collection, then query the collection, getting the QuerySnapshot.
-    // Loop though the QuerySnapshot
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .collection('locations')
-        .where('savedLocation', isEqualTo: cityName)
-        .get()
-        .then((snapshot) => {
-              for (DocumentSnapshot ds in snapshot.docs)
-                {print(ds.reference), ds.reference.delete()}
-            });
-    print('Deleted successful');
+      // Removes the location from firestore
+      // Go to the locations collection, then query the collection, getting the QuerySnapshot.
+      // Loop though the QuerySnapshot
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('locations')
+          .where('savedLocation', isEqualTo: cityName)
+          .get()
+          .then((snapshot) => {
+                for (DocumentSnapshot ds in snapshot.docs)
+                  {print(ds.reference), ds.reference.delete()}
+              });
+      print('Deleted successful');
 
-    notifyListeners();
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
   }
 }

@@ -44,7 +44,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // After getting the coordinates, use them to get the weather
     _location.getCurrentLocation().then((value) => _locationProvider
-            .addLocationByCoordinates(latitude: _location.latitude, longitude: _location.longitude)
+            .searchLocationByCoordinates(
+                latitude: _location.latitude, longitude: _location.longitude)
             .then((value) {
           // changeLoading();
         }));
@@ -335,7 +336,7 @@ class _HomeForegroundState extends State<HomeForeground> {
   Future<void> searchByCityOrZip({bool searchByCity, String input}) async {
     final locationProvider = Provider.of<LocationProvider>(context, listen: false);
     if (searchByCity) {
-      final returnValue = await locationProvider.addLocationByCity(input);
+      final returnValue = await locationProvider.searchLocationByCity(input);
       if (returnValue == 'Success') {
         goToDetailsScreen(context, locationProvider.searchedLocation);
       } else {
@@ -344,7 +345,7 @@ class _HomeForegroundState extends State<HomeForeground> {
         ));
       }
     } else {
-      final returnValue = await locationProvider.addLocationByZip(input);
+      final returnValue = await locationProvider.searchLocationByZip(input);
       if (returnValue == 'Success') {
         goToDetailsScreen(context, locationProvider.searchedLocation);
       } else {

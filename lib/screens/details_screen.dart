@@ -119,9 +119,15 @@ class DetailForeground extends StatelessWidget {
                     onPressed: () {
                       _locationProvider.addLocationToSaved(
                           location, _authProvider.auth.currentUser.uid);
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Location has been added to Saved Locations'),
-                      ));
+                      if (!_locationProvider.locations.contains(location)) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Location has been added to Saved Locations'),
+                        ));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('This location is already saved to your list'),
+                        ));
+                      }
                     },
                     style: OutlinedButton.styleFrom(
                         primary: Colors.white,
