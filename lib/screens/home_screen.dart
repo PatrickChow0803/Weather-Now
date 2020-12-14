@@ -65,8 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
             .then((value) {
           _locationProvider.getListOfSavedLocations(uid).then((value) {
             for (final String locationName in _locationProvider.savedLocations) {
-              _locationProvider.searchLocationByCity(locationName);
-              _locationProvider.addSearchedLocationToLocationList();
+              _locationProvider.searchLocationByCity(locationName).then((value) {
+                _locationProvider.addSearchedLocationToLocationList();
+              });
             }
           });
         }).then((value) {

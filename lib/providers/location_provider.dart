@@ -78,7 +78,7 @@ class LocationProvider with ChangeNotifier {
           'https://api.openweathermap.org/data/2.5/weather?zip=$zipCode&units=imperial&appid=$_apiKey');
       // print(response.body);
       final decodedJson = jsonDecode(response.body) as Map<String, dynamic>;
-      _locations.insert(1, LocationModel.fromJson(decodedJson));
+      _searchedLocation = LocationModel.fromJson(decodedJson);
       notifyListeners();
       return 'Success';
     } catch (e) {
@@ -88,7 +88,6 @@ class LocationProvider with ChangeNotifier {
   }
 
   void addSearchedLocationToLocationList() {
-    print('addSearchedLocationToLocationList');
     _locations.insert(1, _searchedLocation);
     notifyListeners();
   }
