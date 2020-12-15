@@ -11,7 +11,7 @@ Weather Now is an app built with the Flutter Framework. The app is used to find 
 
 •Programmed the UI based on a wireframe. 
 
-Packages Used- 
+Packages Used- <br />
 [Provider](https://pub.dev/packages/provider)<br />
 [Http](https://pub.dev/packages/http)<br />
 [Geolocator](https://pub.dev/packages/geolocator)<br />
