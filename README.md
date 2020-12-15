@@ -12,15 +12,15 @@ Weather Now is an app built with the Flutter Framework. The app is used to find 
 •Programmed the UI based on a wireframe. 
 
 Packages Used- 
-[Provider](https://pub.dev/packages/provider)
-[Http](https://pub.dev/packages/http)
-[Geolocator](https://pub.dev/packages/geolocator)
-[Intl](https://pub.dev/packages/intl)
-[Firebase Core](https://pub.dev/packages/firebase_core)
-[Firebase Auth](https://pub.dev/packages/firebase_auth)
-[Firebase Firestore](https://pub.dev/packages/cloud_firestore)
-[rFlutter Alert](https://pub.dev/packages/rflutter_alert)
-[Cached Network Image](https://pub.dev/packages/cached_network_image)
-[DotEnv](https://pub.dev/packages/flutter_dotenv)
-[Lint](https://pub.dev/packages/lint)
-[Weather Icons](https://pub.dev/packages/weather_icons)
+[Provider](https://pub.dev/packages/provider)<br />
+[Http](https://pub.dev/packages/http)<br />
+[Geolocator](https://pub.dev/packages/geolocator)<br />
+[Intl](https://pub.dev/packages/intl)<br />
+[Firebase Core](https://pub.dev/packages/firebase_core)<br />
+[Firebase Auth](https://pub.dev/packages/firebase_auth)<br />
+[Firebase Firestore](https://pub.dev/packages/cloud_firestore)<br />
+[rFlutter Alert](https://pub.dev/packages/rflutter_alert)<br />
+[Cached Network Image](https://pub.dev/packages/cached_network_image)<br />
+[DotEnv](https://pub.dev/packages/flutter_dotenv)<br />
+[Lint](https://pub.dev/packages/lint)<br />
+[Weather Icons](https://pub.dev/packages/weather_icons)<br />
