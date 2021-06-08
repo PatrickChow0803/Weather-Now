@@ -1,4 +1,5 @@
-* UI Concept from https://dribbble.com/shots/14562207--22-Weather-Forecast-App-MobileApp-Concept
+* UI Concept from - https://dribbble.com/shots/14562207--22-Weather-Forecast-App-MobileApp-Concept
+* Google Play Link - https://play.google.com/store/apps/details?id=com.patrickchow.weather_app
 
 # Weather Now
 
