@@ -60,7 +60,7 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(
                     width: getWidth(context) * .8,
-                    child: RaisedButton(
+                    child: ElevatedButton(
                       onPressed: () async {
                         final String returnVal = await authProvider.signIn(
                           email: _emailController.text,
@@ -81,7 +81,7 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(
                     width: getWidth(context) * .8,
-                    child: RaisedButton(
+                    child: ElevatedButton(
                       onPressed: () async {
                         final String returnVal = await authProvider.createAccount(
                           email: _emailController.text,
@@ -98,7 +98,7 @@ class _LoginState extends State<Login> {
                         }
                       },
                       child: const Text("Create Account"),
-                    ),
+                    )
                   ),
                   const SizedBox(height: 50),
                   InkWell(
