@@ -1,4 +1,4 @@
-package com.patrickchow.weather_app
+package com.tropicaltreasurystudios.weather
 
 import io.flutter.embedding.android.FlutterActivity
 
